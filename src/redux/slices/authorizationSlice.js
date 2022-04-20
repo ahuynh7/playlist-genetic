@@ -87,7 +87,7 @@ export const authorizationSlice = createSlice({
 
         builder.addCase(refreshAccessToken.fulfilled,
             (state, {payload}) => {
-                state.setExpired = false;
+                state.isExpired = false;
                 state.accessToken = payload.access_token;
             }
         );

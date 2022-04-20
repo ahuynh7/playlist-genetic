@@ -20,7 +20,7 @@ export const useAuthorization = () => {
         setTimeout(() => {
             setExpired(true);
             refreshAccessTokenFetch(refreshToken);
-        }, 3600000);        //lifetime of one hour, possibly need to make dynamic
+        }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
         
     }, [accessToken]);
 
