@@ -1,29 +1,20 @@
-import { useEffect } from "react";
-import { Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
-import { useAccessTokenFetch, useRequestAuthorization } from '../../hooks/useAuthorization';
+import { Outlet } from "react-router-dom";
+import { useAuthorization, useRequestAuthorization } from "../../hooks/useAuthorization";
+import Login from "../Login/Login";
 
 const Home = () => {
-    const requestAuth = useRequestAuthorization();
-    const accessTokenFetch = useAccessTokenFetch();
-    const {search} = useLocation();
-    
-    useEffect(() => {
-        //todo: executes twice; should only execute once
-        let code = new URLSearchParams(search).get('code');
-        let error = new URLSearchParams(search).get('error');
-
-        if (code && !error) accessTokenFetch(code);
-        else console.log(error);
-
-    }, [accessTokenFetch, search]);
+    const {isAuthorized} = useRequestAuthorization();
+    const accessToken = useAuthorization();
     
     return (
         <>
-            <h1>home</h1>
-            <Button size='sm' onClick={requestAuth}>
-                log in
-            </Button>
+            <h1>Normify</h1>
+            {isAuthorized() ?
+            null
+            :
+            <Login />
+            }
+            <Outlet />
         </>
     );
 };
