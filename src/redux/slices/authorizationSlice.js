@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Buffer } from 'buffer';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const TOKEN = 'https://accounts.spotify.com/api/token';
@@ -6,12 +7,10 @@ const TOKEN = 'https://accounts.spotify.com/api/token';
 export const requestAccessToken = createAsyncThunk('api/token',
         async (code, thunkAPI) => {
             try {
-                let x = Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET);
-                console.log(x)
                 let url = TOKEN;
-                let body = {
-                    Authorization: 'Basic' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
-                    Content_Type: 'application/x-www-form-urlencoded'
+                let headers = {
+                    'Authorization': 'Basic ' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 
                 };
                 let params = {
@@ -21,7 +20,7 @@ export const requestAccessToken = createAsyncThunk('api/token',
                 };
 
                 return await axios
-                    .post(url, {params})
+                    .post(url, null, {headers, params})
                     .then(x => console.log(x));
             }
             catch (error) {

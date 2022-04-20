@@ -9,6 +9,7 @@ const Home = () => {
     const {search} = useLocation();
     
     useEffect(() => {
+        //todo: executes twice; should only execute once
         let code = new URLSearchParams(search).get('code');
         let error = new URLSearchParams(search).get('error');
 
