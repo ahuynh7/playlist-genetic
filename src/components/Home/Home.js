@@ -1,20 +1,26 @@
 import { useEffect } from "react";
 import { Button } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
+import { useAccessTokenFetch, useRequestAuthorization } from '../../hooks/useAuthorization';
 
 const Home = () => {
-    const requestAuth = () => {
-        const AUTHORIZE = 'https://accounts.spotify.com/authorize';
-        console.log(process.env.REACT_APP_REDIRECT_URI);
-    };
-
+    const requestAuth = useRequestAuthorization();
+    const accessTokenFetch = useAccessTokenFetch();
+    const {search} = useLocation();
+    
     useEffect(() => {
-        requestAuth();
-    }, []);
+        let code = new URLSearchParams(search).get('code');
+        let error = new URLSearchParams(search).get('error');
 
+        if (code && !error) accessTokenFetch(code);
+        else console.log(error);
+
+    }, [accessTokenFetch, search]);
+    
     return (
         <>
             <h1>home</h1>
-            <Button size='sm'>
+            <Button size='sm' onClick={requestAuth}>
                 log in
             </Button>
         </>
