@@ -22,7 +22,7 @@ export const useAuthorization = () => {
             refreshAccessTokenFetch(refreshToken);
         }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
         
-    }, [accessToken]);
+    }, [accessToken, refreshAccessTokenFetch, refreshToken]);
 
     return accessToken;
 };
@@ -31,6 +31,16 @@ export const useRequestAuthorization = () => {
     const state = useSelector(state => state.authorization);
     const queryString = require('query-string');
     const AUTHORIZE = 'https://accounts.spotify.com/authorize?';
+    const [isAuthorized, setIsAuthorized] = useState(state.isAuthorized);
+    const [isPendingAuthorization, setIsPendingAuthorization] = useState(state.isPendingAuthorization);
+
+    useEffect(() => {
+        setIsAuthorized(state.isAuthorized);
+    }, [state.isAuthorized]);
+
+    useEffect(() => {
+        setIsPendingAuthorization(state.isPendingAuthorization);
+    }, [state.isPendingAuthorization]);
 
     const generateRandomString = length => {
         var text = '';
@@ -61,11 +71,7 @@ export const useRequestAuthorization = () => {
         window.location.href = url + query;
     };
 
-    const isAuthorized = () => {
-        return state.isAuthorized;
-    };
-
-    return {isAuthorized, requestAuthorization};
+    return {isAuthorized, isPendingAuthorization, requestAuthorization};
 };
 
 export const useAccessTokenFetch = () => {

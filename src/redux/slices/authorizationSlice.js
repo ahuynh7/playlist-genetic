@@ -58,6 +58,7 @@ export const authorizationSlice = createSlice({
     
     initialState: {
         isAuthorized: null,
+        isPendingAuthorization: null,
         isExpired: null,
         accessToken: null,
         refreshToken: null,
@@ -74,14 +75,22 @@ export const authorizationSlice = createSlice({
         builder.addCase(requestAccessToken.fulfilled, 
             (state, {payload}) => {
                 state.isAuthorized = true;
+                state.isPendingAuthorization = false;
                 state.accessToken = payload.access_token;
                 state.refreshToken = payload.refresh_token;
             }    
         );
 
+        builder.addCase(requestAccessToken.pending,
+            state => {
+                state.isPendingAuthorization = true;
+            }
+        );
+
         builder.addCase(requestAccessToken.rejected,
             state => {
                 state.isAuthorized = false;
+                state.isPendingAuthorization = false;
             }
         );
 

@@ -1,17 +1,26 @@
-import { Outlet } from "react-router-dom";
-import { useAuthorization, useRequestAuthorization } from "../../hooks/useAuthorization";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useRequestAuthorization } from "../../hooks/useAuthorization";
 import Login from "../Login/Login";
 
 const Home = () => {
-    const {isAuthorized} = useRequestAuthorization();
-    const accessToken = useAuthorization();
-    
+    const {isAuthorized, isPendingAuthorization} = useRequestAuthorization();
+    const navigate = useNavigate();
+    const {pathname} = useLocation();
+
+    //prevents accessing /main route without proper authorization first
+    useEffect(() => {
+        if (pathname === '/main' && !isPendingAuthorization && !isAuthorized) {
+            navigate('/');
+        }
+        
+    }, [isPendingAuthorization, navigate, pathname]);
+
+
     return (
         <>
             <h1>Normify</h1>
-            {isAuthorized() ?
-            null
-            :
+            {!isAuthorized && !isPendingAuthorization &&     //minor visual bug here
             <Login />
             }
             <Outlet />
