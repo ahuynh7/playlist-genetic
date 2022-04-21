@@ -56,7 +56,7 @@ export const useRequestAuthorization = () => {
     //gathers url to request authorization with spotify account
     const requestAuthorization = () => {
         let url = AUTHORIZE;
-        let scope = 'user-read-private user-top-read user-read-recently-played user-read-currently-playing user-follow-read playlist-modify-public playlist-modify-private playlist-read-private';
+        let scope = 'user-read-private user-top-read user-library-read user-read-recently-played user-read-currently-playing user-follow-read playlist-read-private';
         let query = queryString.stringify({
             response_type: 'code',
             client_id: process.env.REACT_APP_CLIENT_ID,
