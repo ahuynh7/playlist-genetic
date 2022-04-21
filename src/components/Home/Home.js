@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Container } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useRequestAuthorization } from "../../hooks/useAuthorization";
 import Login from "../Login/Login";
@@ -23,7 +24,10 @@ const Home = () => {
             {!isAuthorized && !isPendingAuthorization &&     //minor visual bug here
             <Login />
             }
-            <Outlet />
+            <Container>
+                <Outlet />
+            </Container>
+            
         </>
     );
 };

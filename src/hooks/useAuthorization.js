@@ -63,7 +63,7 @@ export const useRequestAuthorization = () => {
             redirect_uri: process.env.REACT_APP_REDIRECT_URI + 'login',
             scope: scope,
             state: generateRandomString(16),
-            show_dialogue: false
+            show_dialogue: true     //true: manual accept; for testing, false: automatic
         });
         
         //unlike a thunk, need to physically navigate to external url, but a GET call nevertheless

@@ -1,10 +1,31 @@
-import { useUserFetch } from "../../hooks/useUser";
+import { Table } from "react-bootstrap";
+import { useUserFetch, useUserPlaylistFetch } from "../../hooks/useUser";
 
 const Main = () => {
     const user = useUserFetch();
-    console.log(user);
+    const playlists = useUserPlaylistFetch();
+
+    console.log(playlists);
     return (
-        <div>main</div>
+        <>
+            <div>welcome {user.display_name}</div>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {playlists?.map((playlist, i) => 
+                        <tr key={i}>
+                            <td>{playlist.name}</td>
+                            <td>{playlist.description}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </Table>
+        </>
     );
 };
 
