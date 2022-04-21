@@ -4,14 +4,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const TOKEN = 'https://accounts.spotify.com/api/token';
 
-export const requestAccessToken = createAsyncThunk('request',
+export const requestAccessToken = createAsyncThunk('callback',
     async (code, thunkAPI) => {
         try {
             let url = TOKEN;
             let headers = {
                 Authorization: 'Basic ' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
                 'Content-Type': 'application/x-www-form-urlencoded'
-            
             };
             let params = {
                 grant_type: 'authorization_code',
@@ -36,7 +35,6 @@ export const refreshAccessToken = createAsyncThunk('refresh',
             let headers = {
                 Authorization: 'Basic ' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
                 'Content-Type': 'application/x-www-form-urlencoded'
-            
             };
             let params = {
                 grant_type: 'refresh_token',

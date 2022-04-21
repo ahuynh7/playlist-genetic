@@ -14,7 +14,7 @@ const Home = () => {
             navigate('/');
         }
         
-    }, [isPendingAuthorization, navigate, pathname]);
+    }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
 
 
     return (
