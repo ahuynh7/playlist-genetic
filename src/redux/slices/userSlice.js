@@ -22,7 +22,32 @@ export const getUser = createAsyncThunk('me',
     }
 );
 
-export const getUserPlaylists = createAsyncThunk('me/playlists',
+export const getUserTopTracks = createAsyncThunk('top/tracks',
+    ({accessToken, next=null, timeRange=null}, thunkAPI) => {
+        try {
+            let url = ME + '/top/tracks';
+            let headers = {
+                Authorization: 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            };
+            let params = {
+                limit: 50,      //groups of 50 is max
+                //if next is being passed, use offset param, else keep null
+                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
+                time_range: timeRange
+            };
+
+            return axios                
+                .get(url, {headers, params})
+                .then(response => response.data);
+        }
+        catch (error) {
+            return thunkAPI.rejectWithValue({error: error.message});
+        }
+    }
+);
+
+export const getUserPlaylists = createAsyncThunk('playlists',
     ({accessToken, next=null}, thunkAPI) => {
         try {
             let url = ME + '/playlists';
@@ -51,6 +76,10 @@ export const userSlice = createSlice({
 
     initialState: {
         user: {},
+        top: {
+            tracks: [],
+            artists: []
+        },
         playlists: [],
     },
 

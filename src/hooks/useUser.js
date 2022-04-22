@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getUser, getUserPlaylists } from "../redux/slices/userSlice";
+import {
+    getUser, 
+    getUserPlaylists, 
+    getUserTopTracks
+} from "../redux/slices/userSlice";
 import { useAuthorization } from "./useAuthorization";
 
 export const useUserFetch = () => {
@@ -17,6 +21,31 @@ export const useUserFetch = () => {
     useEffect(() => setUser(state.user), [state.user]);
 
     return user;
+};
+
+export const useUserTopTrackFetch = () => {
+    const accessToken = useAuthorization();
+    const state = useSelector(state => state.user);
+    const [topTracks, setTopTracks] = useState(state.top.tracks);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!accessToken) return;
+
+        const fetch = async () => {
+            let next = null;
+
+            do {
+                next = await dispatch(getUserTopTracks({accessToken, next}))
+                    .then(({payload}) => payload.next);
+            } while (next);
+        };
+
+        fetch();
+        
+    }, [accessToken, dispatch]);
+
+    useEffect(() => setTopTracks(state.top.tracks), [state.top.tracks]);
 };
 
 export const useUserPlaylistFetch = () => {

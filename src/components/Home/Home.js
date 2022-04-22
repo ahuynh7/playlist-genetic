@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+
 import { useRequestAuthorization } from "../../hooks/useAuthorization";
 import Login from "../Login/Login";
 
@@ -17,11 +18,10 @@ const Home = () => {
         
     }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
 
-
     return (
         <>
             <h1>Normify</h1>
-            {!isAuthorized && !isPendingAuthorization &&     //minor visual bug here
+            {!isAuthorized && !isPendingAuthorization &&
             <Login />
             }
             <Container>
