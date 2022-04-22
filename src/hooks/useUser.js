@@ -23,7 +23,10 @@ export const useUserFetch = () => {
     return user;
 };
 
-export const useUserTopTrackFetch = () => {
+//do-while loops below continues to get entities if user's total <entities> > 50
+//spotify responses provide the "next" url to be request
+//if there are no more "next" urls to fetch, stop loop
+export const useUserTopTrackFetch = timeRange => {
     const accessToken = useAuthorization();
     const state = useSelector(state => state.user);
     const [topTracks, setTopTracks] = useState(state.top.tracks);
@@ -36,16 +39,18 @@ export const useUserTopTrackFetch = () => {
             let next = null;
 
             do {
-                next = await dispatch(getUserTopTracks({accessToken, next}))
+                next = await dispatch(getUserTopTracks({accessToken, next, timeRange}))
                     .then(({payload}) => payload.next);
             } while (next);
         };
 
         fetch();
         
-    }, [accessToken, dispatch]);
+    }, [accessToken, dispatch, timeRange]);
 
     useEffect(() => setTopTracks(state.top.tracks), [state.top.tracks]);
+
+    return topTracks;
 };
 
 export const useUserPlaylistFetch = () => {
@@ -60,9 +65,6 @@ export const useUserPlaylistFetch = () => {
         const fetch = async () => {
             let next = null;
             
-            //do-while loop continues to get playlists if user's total playlists > 50
-            //spotify response provides with the "next" url to request
-            //if there are no more "next" urls to fetch, stop loop
             do {
                 next = await dispatch(getUserPlaylists({accessToken, next}))
                     .then(({payload}) => payload.next);

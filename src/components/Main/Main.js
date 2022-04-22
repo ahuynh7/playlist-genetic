@@ -1,11 +1,12 @@
 import { Table } from "react-bootstrap";
-import { useUserFetch, useUserPlaylistFetch } from "../../hooks/useUser";
+import { useUserFetch, useUserPlaylistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
 const Main = () => {
     const user = useUserFetch();
     const playlists = useUserPlaylistFetch();
+    const topTracks = useUserTopTrackFetch('short_term');
 
-    console.log(playlists);
+    console.log(topTracks);
     return (
         <>
             <div>welcome {user.display_name}</div>

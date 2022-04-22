@@ -23,7 +23,7 @@ export const getUser = createAsyncThunk('me',
 );
 
 export const getUserTopTracks = createAsyncThunk('top/tracks',
-    ({accessToken, next=null, timeRange=null}, thunkAPI) => {
+    ({accessToken, next=null, timeRange}, thunkAPI) => {
         try {
             let url = ME + '/top/tracks';
             let headers = {
@@ -83,17 +83,27 @@ export const userSlice = createSlice({
         playlists: [],
     },
 
+    //push.apply() joins elements of arrays together
     extraReducers: builder => {
         builder.addCase(getUser.fulfilled,
             (state, {payload}) => {
                 state.user = payload;
             }
         );
+        
+        builder.addCase(getUserTopTracks.fulfilled,
+            (state, {payload}) => {
+                state.top.tracks.push.apply(
+                    state.top.tracks,
+                    payload.items
+                );
+            }
+        );
 
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
-                state.playlists.push.apply(     //.apply() joins elements of arrays together
+                state.playlists.push.apply(     
                     state.playlists, 
                     payload.items.filter(e => e.owner.id === state.user.id)
                 );
