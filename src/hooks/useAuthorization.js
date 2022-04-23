@@ -6,24 +6,17 @@ export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
     const state = useSelector(state => state.authorization);
     const [accessToken, setAccessToken] = useState(state.accessToken);
-    const [isExpired, setIsExpired] = useState(state.isExpired);
     const refreshToken = state.refreshToken;
 
     //only sets tokens if it exists; eliminates uneccesary calls
     useEffect(() => {
         if (state.accessToken) setAccessToken(state.accessToken);
     }, [state.accessToken]);
-
-    useEffect(() => {
-        if (state.isExpired) setIsExpired(state.isExpired);
-    }, [state.isExpired]);
     
     //handles refreshing tokens once it expires automagically
     useEffect(() => {
-        
         if (!refreshToken) return;
-        console.log('here');
-        
+        console.log('here')
         //todo: clear timeout if accessToken is intermediately changed
         setTimeout(() => {
             setExpired(true);

@@ -1,15 +1,34 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { createContext } from 'react';
 
-import store from './redux/store';
+import {
+    useAuthorization,
+    useRequestAuthorization
+} from './hooks/useAuthorization';
+
 import Home from './components/Home/Home';
 import NotFound from './components/Home/NotFound';
 import Main from './components/Main/Main';
 
+export const AuthorizationContext = createContext();
+
 const App = () => {
+    const {
+        isAuthorized, 
+        isPendingAuthorization, 
+        requestAuthorization
+    } = useRequestAuthorization();
+    const accessToken = useAuthorization();
     
+    const contextPackage = {
+        accessToken,
+        isAuthorized, 
+        isPendingAuthorization, 
+        requestAuthorization
+    };
+
     return (
-        <Provider store={store}>
+        <AuthorizationContext.Provider value={contextPackage}>
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Home />} >
@@ -19,7 +38,7 @@ const App = () => {
                     <Route path='*' element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
-        </Provider>
+        </AuthorizationContext.Provider>    
     );
 }
 

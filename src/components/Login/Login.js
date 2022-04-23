@@ -1,11 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AuthorizationContext } from "../../App";
 
-import { useAccessTokenFetch, useRequestAuthorization } from '../../hooks/useAuthorization';
+import { useAccessTokenFetch } from '../../hooks/useAuthorization';
 
 const Login = () => {
-    const {requestAuthorization} = useRequestAuthorization();
+    const {requestAuthorization} = useContext(AuthorizationContext);
     const {accessTokenFetch} = useAccessTokenFetch();
     const navigate = useNavigate();
     const {search} = useLocation();

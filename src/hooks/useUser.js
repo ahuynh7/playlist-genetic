@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -6,10 +6,10 @@ import {
     getUserPlaylists, 
     getUserTopTracks
 } from "../redux/slices/userSlice";
-import { useAuthorization } from "./useAuthorization";
+import { AuthorizationContext } from "../App";
 
 export const useUserFetch = () => {
-    const accessToken = useAuthorization();
+    const {accessToken} = useContext(AuthorizationContext);
     const state = useSelector(state => state.user);
     const [user, setUser] = useState(state.user);
     const dispatch = useDispatch();
@@ -27,11 +27,11 @@ export const useUserFetch = () => {
 //spotify responses provide the "next" url to be request
 //if there are no more "next" urls to fetch, stop loop
 export const useUserTopTrackFetch = timeRange => {
-    const accessToken = useAuthorization();
+    const {accessToken} = useContext(AuthorizationContext);
     const state = useSelector(state => state.user);
     const [topTracks, setTopTracks] = useState(state.top.tracks);
     const dispatch = useDispatch();
-
+    
     useEffect(() => {
         if (!accessToken) return;
 
@@ -54,7 +54,7 @@ export const useUserTopTrackFetch = timeRange => {
 };
 
 export const useUserPlaylistFetch = () => {
-    const accessToken = useAuthorization();
+    const {accessToken} = useContext(AuthorizationContext);
     const state = useSelector(state => state.user);
     const [playlists, setPlaylists] = useState(state.playlists);
     const dispatch = useDispatch();
