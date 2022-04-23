@@ -1,10 +1,41 @@
-import { useUserFetch } from "../../hooks/useUser";
+import { createContext } from "react";
+import { Table } from "react-bootstrap";
+import { useUserFetch, useUserPlaylistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+
+export const UserContext = createContext();
 
 const Main = () => {
     const user = useUserFetch();
-    console.log(user);
+    const playlists = useUserPlaylistFetch();
+    const topTracks = useUserTopTrackFetch('short_term');
+
+    const contextPackage = {
+        user,
+        playlists,
+        topTracks
+    };
+
+    console.log(contextPackage);
     return (
-        <div>main</div>
+        <UserContext.Provider value={contextPackage}>
+            <div>welcome {user.display_name}</div>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {playlists?.map((playlist, i) => 
+                        <tr key={i}>
+                            <td>{playlist.name}</td>
+                            <td>{playlist.description}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </Table>
+        </UserContext.Provider>
     );
 };
 

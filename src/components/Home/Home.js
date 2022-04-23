@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { Container } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useRequestAuthorization } from "../../hooks/useAuthorization";
+
+import { AuthorizationContext } from "../../App";
 import Login from "../Login/Login";
 
 const Home = () => {
-    const {isAuthorized, isPendingAuthorization} = useRequestAuthorization();
+    const {isAuthorized, isPendingAuthorization} = useContext(AuthorizationContext);
     const navigate = useNavigate();
     const {pathname} = useLocation();
-
+    
     //prevents accessing /main route without proper authorization first
     useEffect(() => {
         if (pathname === '/main' && !isPendingAuthorization && !isAuthorized) {
@@ -16,14 +18,16 @@ const Home = () => {
         
     }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
 
-
     return (
         <>
             <h1>Normify</h1>
-            {!isAuthorized && !isPendingAuthorization &&     //minor visual bug here
+            {!isAuthorized && !isPendingAuthorization &&
             <Login />
             }
-            <Outlet />
+            <Container>
+                <Outlet />
+            </Container>
+            
         </>
     );
 };

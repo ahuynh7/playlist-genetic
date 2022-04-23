@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshAccessToken, requestAccessToken, setExpired } from '../redux/slices/authorizationSlice';
+import { refreshAccessToken, requestAccessToken } from '../redux/slices/authorizationSlice';
 
 export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
@@ -8,20 +8,22 @@ export const useAuthorization = () => {
     const [accessToken, setAccessToken] = useState(state.accessToken);
     const refreshToken = state.refreshToken;
 
+    //only sets tokens if it exists; eliminates uneccesary calls
     useEffect(() => {
-        setAccessToken(state.accessToken);
+        if (state.accessToken) setAccessToken(state.accessToken);
     }, [state.accessToken]);
-
-    //handles refreshing tokens once it expires automagically
+    
+    //automagically handles refreshing tokens once it expires
     useEffect(() => {
-        if (!accessToken) return;
+        if (!accessToken || !refreshToken) return;
         
-        //todo: clear timeout if accessToken is intermediately changed
-        setTimeout(() => {
-            setExpired(true);
+        const timer = setTimeout(async () => {
             refreshAccessTokenFetch(refreshToken);
         }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
         
+        //clear timeout before each render
+        return () => clearTimeout(timer);
+
     }, [accessToken, refreshAccessTokenFetch, refreshToken]);
 
     return accessToken;
@@ -56,14 +58,22 @@ export const useRequestAuthorization = () => {
     //gathers url to request authorization with spotify account
     const requestAuthorization = () => {
         let url = AUTHORIZE;
-        let scope = 'user-read-private user-top-read user-read-recently-played user-read-currently-playing user-follow-read playlist-modify-public playlist-modify-private playlist-read-private';
+        let scope = [
+            'user-read-private',
+            'user-top-read',
+            'user-library-read',
+            'user-read-recently-played',
+            'user-read-currently-playing',
+            'user-follow-read',
+            'playlist-read-private'
+        ];
         let query = queryString.stringify({
             response_type: 'code',
             client_id: process.env.REACT_APP_CLIENT_ID,
             redirect_uri: process.env.REACT_APP_REDIRECT_URI + 'login',
-            scope: scope,
+            scope: scope.join(' '),
             state: generateRandomString(16),
-            show_dialogue: false
+            show_dialogue: true     //true: manual accept; for testing, false: automatic
         });
         
         //unlike a thunk, need to physically navigate to external url, but a GET call nevertheless

@@ -3,13 +3,14 @@ import { Buffer } from 'buffer';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const TOKEN = 'https://accounts.spotify.com/api/token';
+const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64');
 
 export const requestAccessToken = createAsyncThunk('callback',
     async (code, thunkAPI) => {
         try {
             let url = TOKEN;
             let headers = {
-                Authorization: 'Basic ' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
+                Authorization: 'Basic ' + ENCODED_ID,
                 'Content-Type': 'application/x-www-form-urlencoded'
             };
             let params = {
@@ -33,7 +34,7 @@ export const refreshAccessToken = createAsyncThunk('refresh',
         try {
             let url = TOKEN;
             let headers = {
-                Authorization: 'Basic ' + Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64'),
+                Authorization: 'Basic ' + ENCODED_ID,
                 'Content-Type': 'application/x-www-form-urlencoded'
             };
             let params = {
@@ -57,17 +58,11 @@ export const authorizationSlice = createSlice({
     initialState: {
         isAuthorized: null,
         isPendingAuthorization: null,
-        isExpired: null,
         accessToken: null,
         refreshToken: null,
     },
 
     //reducer to generate base64 encoded id? and save to state?
-    reducers: {
-        setExpired: (state, action) => {
-            state.isExpired = action;
-        }
-    },
 
     extraReducers: builder => {
         builder.addCase(requestAccessToken.fulfilled, 
@@ -94,12 +89,10 @@ export const authorizationSlice = createSlice({
 
         builder.addCase(refreshAccessToken.fulfilled,
             (state, {payload}) => {
-                state.isExpired = false;
                 state.accessToken = payload.access_token;
             }
         );
     }
 });
 
-export const {setExpired} = authorizationSlice.actions;
 export default authorizationSlice.reducer;
