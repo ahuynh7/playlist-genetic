@@ -9,7 +9,7 @@ const Home = () => {
     const {isAuthorized, isPendingAuthorization} = useRequestAuthorization();
     const navigate = useNavigate();
     const {pathname} = useLocation();
-
+    
     //prevents accessing /main route without proper authorization first
     useEffect(() => {
         if (pathname === '/main' && !isPendingAuthorization && !isAuthorized) {

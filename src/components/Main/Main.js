@@ -6,7 +6,8 @@ const Main = () => {
     const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch('short_term');
 
-    console.log(topTracks);
+    //createContext in this component
+    //console.log(topTracks);
     return (
         <>
             <div>welcome {user.display_name}</div>

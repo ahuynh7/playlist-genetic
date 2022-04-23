@@ -6,23 +6,31 @@ export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
     const state = useSelector(state => state.authorization);
     const [accessToken, setAccessToken] = useState(state.accessToken);
+    const [isExpired, setIsExpired] = useState(state.isExpired);
     const refreshToken = state.refreshToken;
 
+    //only sets tokens if it exists; eliminates uneccesary calls
     useEffect(() => {
-        setAccessToken(state.accessToken);
+        if (state.accessToken) setAccessToken(state.accessToken);
     }, [state.accessToken]);
 
+    useEffect(() => {
+        if (state.isExpired) setIsExpired(state.isExpired);
+    }, [state.isExpired]);
+    
     //handles refreshing tokens once it expires automagically
     useEffect(() => {
-        if (!accessToken) return;
+        
+        if (!refreshToken) return;
+        console.log('here');
         
         //todo: clear timeout if accessToken is intermediately changed
         setTimeout(() => {
             setExpired(true);
             refreshAccessTokenFetch(refreshToken);
         }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
-        
-    }, [accessToken, refreshAccessTokenFetch, refreshToken]);
+
+    }, [refreshAccessTokenFetch, refreshToken]);
 
     return accessToken;
 };
@@ -57,12 +65,12 @@ export const useRequestAuthorization = () => {
     const requestAuthorization = () => {
         let url = AUTHORIZE;
         let scope = [
-            'user-read-private', 
-            'user-top-read', 
-            'user-library-read', 
-            'user-read-recently-played', 
-            'user-read-currently-playing', 
-            'user-follow-read', 
+            'user-read-private',
+            'user-top-read',
+            'user-library-read',
+            'user-read-recently-played',
+            'user-read-currently-playing',
+            'user-follow-read',
             'playlist-read-private'
         ];
         let query = queryString.stringify({
