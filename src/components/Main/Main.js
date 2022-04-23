@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { Table } from "react-bootstrap";
-import { useUserFetch, useUserPlaylistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+import { useUserFetch, useUserPlaylistFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
 export const UserContext = createContext();
 
@@ -8,11 +8,13 @@ const Main = () => {
     const user = useUserFetch();
     const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch('short_term');
+    const topArtists = useUserTopArtistFetch('short_term');
 
     const contextPackage = {
         user,
         playlists,
-        topTracks
+        topTracks,
+        topArtists
     };
 
     console.log(contextPackage);
