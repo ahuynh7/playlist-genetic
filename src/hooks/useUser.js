@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     getUser, 
     getUserPlaylists, 
+    getUserTopArtists, 
     getUserTopTracks
 } from "../redux/slices/userSlice";
 import { AuthorizationContext } from "../App";
@@ -51,6 +52,33 @@ export const useUserTopTrackFetch = timeRange => {
     useEffect(() => setTopTracks(state.top.tracks), [state.top.tracks]);
 
     return topTracks;
+};
+
+export const useUserTopArtistFetch = timeRange => {
+    const {accessToken} = useContext(AuthorizationContext);
+    const state = useSelector(state => state.user);
+    const [topArtists, setTopArtists] = useState(state.top.artists);
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        if (!accessToken) return;
+
+        const fetch = async () => {
+            let next = null;
+
+            do {
+                next = await dispatch(getUserTopArtists({accessToken, next, timeRange}))
+                    .then(({payload}) => payload.next);
+            } while (next);
+        };
+
+        fetch();
+        
+    }, [accessToken, dispatch, timeRange]);
+
+    useEffect(() => setTopArtists(state.top.artists), [state.top.artists]);
+
+    return topArtists;
 };
 
 export const useUserPlaylistFetch = () => {

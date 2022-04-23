@@ -18,7 +18,6 @@ export const useAuthorization = () => {
         if (!accessToken || !refreshToken) return;
         
         const timer = setTimeout(async () => {
-            console.log('zzz');
             refreshAccessTokenFetch(refreshToken);
         }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
         

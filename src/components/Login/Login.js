@@ -15,9 +15,10 @@ const Login = () => {
     useEffect(() => {
         let code = new URLSearchParams(search).get('code');
         let error = new URLSearchParams(search).get('error');
-
+        
         if (code && !error && !initital.current) {
             initital.current = true;
+
             accessTokenFetch(code);
             navigate('/main');
         }

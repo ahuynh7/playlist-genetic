@@ -1,15 +1,23 @@
+import { createContext } from "react";
 import { Table } from "react-bootstrap";
 import { useUserFetch, useUserPlaylistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+
+export const UserContext = createContext();
 
 const Main = () => {
     const user = useUserFetch();
     const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch('short_term');
 
-    //createContext in this component
-    //console.log(topTracks);
+    const contextPackage = {
+        user,
+        playlists,
+        topTracks
+    };
+
+    console.log(contextPackage);
     return (
-        <>
+        <UserContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>
             <Table>
                 <thead>
@@ -27,7 +35,7 @@ const Main = () => {
                     )}
                 </tbody>
             </Table>
-        </>
+        </UserContext.Provider>
     );
 };
 
