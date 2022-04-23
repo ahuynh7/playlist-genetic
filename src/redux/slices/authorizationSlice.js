@@ -58,22 +58,15 @@ export const authorizationSlice = createSlice({
     initialState: {
         isAuthorized: null,
         isPendingAuthorization: null,
-        isExpired: null,
         accessToken: null,
         refreshToken: null,
     },
 
     //reducer to generate base64 encoded id? and save to state?
-    reducers: {
-        setExpired: (state, action) => {
-            state.isExpired = action;
-        }
-    },
 
     extraReducers: builder => {
         builder.addCase(requestAccessToken.fulfilled, 
             (state, {payload}) => {
-                state.isExpired = false;
                 state.isAuthorized = true;
                 state.isPendingAuthorization = false;
                 state.accessToken = payload.access_token;
@@ -96,12 +89,10 @@ export const authorizationSlice = createSlice({
 
         builder.addCase(refreshAccessToken.fulfilled,
             (state, {payload}) => {
-                state.isExpired = false;
                 state.accessToken = payload.access_token;
             }
         );
     }
 });
 
-export const {setExpired} = authorizationSlice.actions;
 export default authorizationSlice.reducer;

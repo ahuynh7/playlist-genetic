@@ -19,7 +19,6 @@ const App = () => {
         requestAuthorization
     } = useRequestAuthorization();
     const accessToken = useAuthorization();
-    
     const contextPackage = {
         accessToken,
         isAuthorized, 

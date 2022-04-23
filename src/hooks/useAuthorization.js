@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshAccessToken, requestAccessToken, setExpired } from '../redux/slices/authorizationSlice';
+import { refreshAccessToken, requestAccessToken } from '../redux/slices/authorizationSlice';
 
 export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
@@ -13,17 +13,19 @@ export const useAuthorization = () => {
         if (state.accessToken) setAccessToken(state.accessToken);
     }, [state.accessToken]);
     
-    //handles refreshing tokens once it expires automagically
+    //automagically handles refreshing tokens once it expires
     useEffect(() => {
-        if (!refreshToken) return;
-        console.log('here')
-        //todo: clear timeout if accessToken is intermediately changed
-        setTimeout(() => {
-            setExpired(true);
+        if (!accessToken || !refreshToken) return;
+        
+        const timer = setTimeout(async () => {
+            console.log('zzz');
             refreshAccessTokenFetch(refreshToken);
         }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
+        
+        //clear timeout before each render
+        return () => clearTimeout(timer);
 
-    }, [refreshAccessTokenFetch, refreshToken]);
+    }, [accessToken, refreshAccessTokenFetch, refreshToken]);
 
     return accessToken;
 };
