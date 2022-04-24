@@ -67,10 +67,10 @@ export const authorizationSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(requestAccessToken.fulfilled, 
             (state, {payload}) => {
-                state.isAuthorized = true;
-                state.isPendingAuthorization = false;
                 state.accessToken = payload.access_token;
                 state.refreshToken = payload.refresh_token;
+                state.isAuthorized = true;
+                state.isPendingAuthorization = false;
             }    
         );
 

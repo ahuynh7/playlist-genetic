@@ -125,6 +125,15 @@ export const userSlice = createSlice({
             }
         );
 
+        builder.addCase(getUserTopArtists.fulfilled,
+            (state, {payload}) => {
+                state.top.artists.push.apply(
+                    state.top.artists,
+                    payload.items
+                );
+            }
+        );
+
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
