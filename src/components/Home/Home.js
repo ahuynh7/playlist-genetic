@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
-import Login from "../Login/Login";
+import Login from "../Login";
 
 const Home = () => {
     const {isAuthorized, isPendingAuthorization} = useContext(AuthorizationContext);

@@ -6,9 +6,9 @@ import {
     useRequestAuthorization
 } from './hooks/useAuthorization';
 
-import Home from './components/Home/Home';
-import NotFound from './components/Home/NotFound';
-import Main from './components/Main/Main';
+import Home from './components/Home';
+import NotFound from './components/NotFound';
+import Main from './components/Main';
 
 export const AuthorizationContext = createContext();
 
