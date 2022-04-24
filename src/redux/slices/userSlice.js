@@ -139,7 +139,7 @@ export const userSlice = createSlice({
                 //filters only playlists own/created by the user; excludes followed playlists
                 state.playlists.push.apply(     
                     state.playlists, 
-                    payload.items.filter(e => e.owner.id === state.user.id)
+                    payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
                 );
             }
         );

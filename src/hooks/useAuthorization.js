@@ -19,7 +19,7 @@ export const useAuthorization = () => {
         
         const timer = setTimeout(async () => {
             refreshAccessTokenFetch(refreshToken);
-        }, 3600);        //lifetime of one hour, possibly need to make dynamic
+        }, 3600 * 1000);        //lifetime of one hour, possibly need to make dynamic
         
         //clear timeout before each render
         return () => clearTimeout(timer);
