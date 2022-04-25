@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+    getPlaylistTracks,
     getUser, 
     getUserPlaylists, 
     getUserTopArtists, 
@@ -41,14 +42,15 @@ export const useUserTopTrackFetch = timeRange => {
         
         do {
             next = await dispatch(getUserTopTracks({accessToken, next, timeRange}))
-                .then(({payload}) => payload.next);
+                .then(({payload}) => payload.next)
+                .catch(() => null);
         } while (next);
     }, [accessToken, dispatch, timeRange]);
 
     useEffect(() => {
-        if (isAuthorized && (topTracks.length === 0)) fetch();
+        if (isAuthorized) fetch();
 
-    }, [isAuthorized, fetch, topTracks]);
+    }, [isAuthorized, fetch]);
 
     useEffect(() => setTopTracks(state.top.tracks), [state.top.tracks]);
 
@@ -66,14 +68,15 @@ export const useUserTopArtistFetch = timeRange => {
         
         do {
             next = await dispatch(getUserTopArtists({accessToken, next, timeRange}))
-                .then(({payload}) => payload.next);
+                .then(({payload}) => payload.next)
+                .catch(() => null);
         } while (next);
     }, [accessToken, dispatch, timeRange]);
 
     useEffect(() => {
-        if (isAuthorized && (topArtists.length === 0)) fetch();
+        if (isAuthorized) fetch();
 
-    }, [isAuthorized, fetch, topArtists]);
+    }, [isAuthorized, fetch]);
 
     useEffect(() => setTopArtists(state.top.artists), [state.top.artists]);
 
@@ -86,23 +89,39 @@ export const useUserPlaylistFetch = () => {
     const [playlists, setPlaylists] = useState(state.playlists);
     const dispatch = useDispatch();
 
-    const fetch = useCallback(async () => {
+    const fetchTracks = useCallback(async playlist => {
+        let next = null;
+        
+        do {
+            next = await dispatch(getPlaylistTracks({
+                accessToken, next, playlistId: playlist.id,
+                ownerId: playlist.owner.id, collaborative: playlist.collaborative
+            }))
+                .then(({payload}) => payload.next);
+        } while (next);
+
+    }, [accessToken, dispatch]);
+
+    const fetchPlaylists = useCallback(async () => {
         let next = null;
         
         do {
             next = await dispatch(getUserPlaylists({accessToken, next}))
                 .then(({payload}) => {
                     //within playlist payload, fetch tracks for each
-                    //Promise.all();
-                    return payload.next
-                });
+                    payload.items = [payload.items[0]];
+                    Promise.all(payload.items.map(e => fetchTracks(e)));
+                    return payload.next;
+                })
+                .catch(() => null);
         } while (next);
-    }, [accessToken, dispatch]);
+
+    }, [accessToken, dispatch, fetchTracks]);
 
     useEffect(() => {
-        if (isAuthorized && (playlists.length === 0)) fetch();
+        if (isAuthorized) fetchPlaylists();
 
-    }, [isAuthorized, fetch, playlists]);
+    }, [isAuthorized, fetchPlaylists]);
 
     useEffect(() => setPlaylists(state.playlists), [state.playlists]);
 
