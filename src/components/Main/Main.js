@@ -17,7 +17,7 @@ const Main = () => {
         topArtists
     };
 
-    console.log(contextPackage);
+    //console.log(contextPackage);
     return (
         <UserContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>

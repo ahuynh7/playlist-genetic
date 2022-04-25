@@ -91,7 +91,11 @@ export const useUserPlaylistFetch = () => {
         
         do {
             next = await dispatch(getUserPlaylists({accessToken, next}))
-                .then(({payload}) => payload.next);
+                .then(({payload}) => {
+                    //within playlist payload, fetch tracks for each
+                    //Promise.all();
+                    return payload.next
+                });
         } while (next);
     }, [accessToken, dispatch]);
 
