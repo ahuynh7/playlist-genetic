@@ -97,7 +97,8 @@ export const useUserPlaylistFetch = () => {
                 accessToken, next, playlistId: playlist.id,
                 ownerId: playlist.owner.id, collaborative: playlist.collaborative
             }))
-                .then(({payload}) => payload.next);
+                .then(({payload}) => payload.next)
+                .catch(() => null);
         } while (next);
 
     }, [accessToken, dispatch]);
@@ -109,8 +110,8 @@ export const useUserPlaylistFetch = () => {
             next = await dispatch(getUserPlaylists({accessToken, next}))
                 .then(({payload}) => {
                     //within playlist payload, fetch tracks for each
-                    payload.items = [payload.items[0]];
-                    Promise.all(payload.items.map(e => fetchTracks(e)));
+                    payload.items = [payload.items[1]];
+                    payload.items.map(e => fetchTracks(e));
                     return payload.next;
                 })
                 .catch(() => null);

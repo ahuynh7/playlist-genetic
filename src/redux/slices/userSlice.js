@@ -107,12 +107,8 @@ export const getUserPlaylists = createAsyncThunk('playlists',
 );
 
 export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
-    ({accessToken, next=null, playlistId, ownerId, collaborative}, thunkAPI) => {
+    ({accessToken, next=null, playlistId}, thunkAPI) => {
         try {
-            //using the thunkAPI to access state values,
-            //and throwing an exception if the playlist is not owned by user and not collaborative
-            if ((ownerId !== thunkAPI.getState().user.user.id) || collaborative) throw {error: ''};
-
             let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
             let headers = {
                 Authorization: 'Bearer ' + accessToken,
@@ -133,6 +129,11 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
         catch (error) {
             return thunkAPI.rejectWithValue({error: error.message});
         }
+    },
+    {
+        //using the thunkAPI to access state values,
+        //and throwing an exception if the playlist is not owned by user and not collaborative
+        condition: ({collaborative, ownerId}, {getState}) => (ownerId === getState().user.user.id) && !collaborative
     }
 );
 
@@ -181,6 +182,18 @@ export const userSlice = createSlice({
                     state.playlists, 
                     payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
                 );
+            }
+        );
+
+        builder.addCase(getPlaylistTracks.fulfilled,
+            (state, {meta, payload}) => {
+                //search for playlist in the state to append tracks to
+                let playlistIndex = state.playlists.findIndex(e => e.id === meta.arg.playlistId);
+                //fix
+                // state.playlists[playlistIndex].tracks.items.push.apply(
+                //     state.playlists,
+                //     payload.items
+                // );
             }
         );
     }
