@@ -203,6 +203,10 @@ export const userSlice = createSlice({
                 console.log(action)
             }
         );
+
+        function* watch() {
+            
+        }
     }
 });
 
