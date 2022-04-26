@@ -102,7 +102,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
         }
     },
     {
-        condition: (_, {getState}) => getState().user.playlists.length === 0
+        condition: (_, {getState}) => Object.keys(getState().user.playlists).length === 0
     }
 );
 
@@ -113,7 +113,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
             let headers = {
                 Authorization: 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
-                'Retry-After': 1        //because so many calls are made per second, api will limit calls; retry after 1 second
+                'Retry-After': 2        //because so many calls are made per second, api will limit calls; retry after 1 second
             };
             let params = {
                 fields: 'items(track(name)),next,total',
@@ -131,8 +131,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
         }
     },
     {
-        //using the thunkAPI to access state values,
-        //and throwing an exception if the playlist is not owned by user and not collaborative
+        //if the playlist is not owned by user and not collaborative
         condition: ({collaborative, ownerId}, {getState}) => (ownerId === getState().user.user.id) && !collaborative
     }
 );
@@ -146,7 +145,7 @@ export const userSlice = createSlice({
             tracks: [],
             artists: []
         },
-        playlists: [],
+        playlists: {},
     },
 
     //push.apply() joins elements of arrays together
@@ -178,22 +177,21 @@ export const userSlice = createSlice({
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
-                state.playlists.push.apply(     
-                    state.playlists, 
-                    payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
-                );
+                //then appends to state as key: id and value: playlist pair
+                payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
+                    .forEach(e => {
+                        e.tracks['items'] = [];        //adding items element to tracks
+                        state.playlists[e.id] = e;
+                    });
             }
         );
 
         builder.addCase(getPlaylistTracks.fulfilled,
             (state, {meta, payload}) => {
-                //search for playlist in the state to append tracks to
-                let playlistIndex = state.playlists.findIndex(e => e.id === meta.arg.playlistId);
-                //fix
-                // state.playlists[playlistIndex].tracks.items.push.apply(
-                //     state.playlists,
-                //     payload.items
-                // );
+                state.playlists[meta.arg.playlistId].tracks.items.push.apply(
+                    state.playlists[meta.arg.playlistId].tracks.items,
+                    payload.items
+                );
             }
         );
     }

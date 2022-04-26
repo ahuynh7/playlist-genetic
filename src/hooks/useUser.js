@@ -110,8 +110,8 @@ export const useUserPlaylistFetch = () => {
             next = await dispatch(getUserPlaylists({accessToken, next}))
                 .then(({payload}) => {
                     //within playlist payload, fetch tracks for each
-                    payload.items = [payload.items[1]];
                     payload.items.map(e => fetchTracks(e));
+                    
                     return payload.next;
                 })
                 .catch(() => null);
