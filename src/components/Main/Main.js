@@ -16,7 +16,7 @@ const Main = () => {
         topTracks,
         topArtists
     };
-
+    
     return (
         <UserContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>

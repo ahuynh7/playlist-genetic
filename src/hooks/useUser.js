@@ -43,7 +43,6 @@ export const useUserTopTrackFetch = timeRange => {
         do {
             next = await dispatch(getUserTopTracks({accessToken, next, timeRange}))
                 .then(({payload}) => payload.next)
-                .catch(() => null);
         } while (next);
     }, [accessToken, dispatch, timeRange]);
 
@@ -69,7 +68,6 @@ export const useUserTopArtistFetch = timeRange => {
         do {
             next = await dispatch(getUserTopArtists({accessToken, next, timeRange}))
                 .then(({payload}) => payload.next)
-                .catch(() => null);
         } while (next);
     }, [accessToken, dispatch, timeRange]);
 
@@ -82,7 +80,7 @@ export const useUserTopArtistFetch = timeRange => {
 
     return topArtists;
 };
-//todo: get tracks within playlists
+
 export const useUserPlaylistFetch = () => {
     const {accessToken, isAuthorized} = useContext(AuthorizationContext);
     const state = useSelector(state => state.user);
@@ -110,11 +108,11 @@ export const useUserPlaylistFetch = () => {
             next = await dispatch(getUserPlaylists({accessToken, next}))
                 .then(({payload}) => {
                     //within playlist payload, fetch tracks for each
+                    //[payload.items[0]].map(e => fetchTracks(e));
                     payload.items.map(e => fetchTracks(e));
-                    
+
                     return payload.next;
                 })
-                .catch(() => null);
         } while (next);
 
     }, [accessToken, dispatch, fetchTracks]);
