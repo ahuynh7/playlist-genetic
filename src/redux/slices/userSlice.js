@@ -113,7 +113,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
             let headers = {
                 Authorization: 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
-                'Retry-After': 2        //because so many calls are made per second, api will limit calls; retry after 1 second
+                'Retry-After': 3        //because so many calls are made per second, api will limit calls; retry after 1 second
             };
             let params = {
                 fields: 'items(track(name)),next,total',
