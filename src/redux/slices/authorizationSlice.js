@@ -6,7 +6,7 @@ const TOKEN = 'https://accounts.spotify.com/api/token';
 const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64');
 
 export const requestAccessToken = createAsyncThunk('callback',
-    async (code, thunkAPI) => {
+    async (code, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
@@ -24,13 +24,13 @@ export const requestAccessToken = createAsyncThunk('callback',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
 export const refreshAccessToken = createAsyncThunk('refresh',
-    async (refreshToken, thunkAPI) => {
+    async (refreshToken, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
@@ -47,7 +47,7 @@ export const refreshAccessToken = createAsyncThunk('refresh',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     }
 );

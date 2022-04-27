@@ -5,7 +5,7 @@ const SPOTIFY = 'https://api.spotify.com/v1';
 const ME = 'https://api.spotify.com/v1/me';
 
 export const getUser = createAsyncThunk('me',
-    async (accessToken, thunkAPI) => {
+    async (accessToken, {rejectWithValue}) => {
         try {
             let url = ME;
             let headers = {
@@ -18,13 +18,13 @@ export const getUser = createAsyncThunk('me',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
 export const getUserTopTracks = createAsyncThunk('top/tracks',
-    async ({accessToken, next=null, timeRange}, thunkAPI) => {
+    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
         try {
             let url = ME + '/top/tracks';
             let headers = {
@@ -43,7 +43,7 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     },
     {
@@ -53,7 +53,7 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
 );
 
 export const getUserTopArtists = createAsyncThunk('top/artists',
-    async ({accessToken, next=null, timeRange}, thunkAPI) => {
+    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
         try {
             let url = ME + '/top/artists';
             let headers = {
@@ -72,7 +72,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     },
     {
@@ -82,7 +82,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
 );
 
 export const getUserPlaylists = createAsyncThunk('playlists',
-    async ({accessToken, next=null}, thunkAPI) => {
+    async ({accessToken, next=null}, {rejectWithValue}) => {
         try {
             let url = ME + '/playlists';
             let headers = {
@@ -100,7 +100,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data.data);
         }
     },
     {
@@ -110,7 +110,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
 );
 
 export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
-    async ({accessToken, next=null, playlistId}, thunkAPI) => {
+    async ({accessToken, next=null, playlistId}, {rejectWithValue}) => {
         try {
             let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
             let headers = {
@@ -130,7 +130,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
                 .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue(error.response);
+            return rejectWithValue(error.response.data);
         }
     },
     {
@@ -195,12 +195,6 @@ export const userSlice = createSlice({
                     state.playlists[meta.arg.playlistId].tracks.items,
                     payload.items.filter(e => !e.track.is_local)     //remove local tracks
                 );
-            }
-        );
-
-        builder.addCase(getPlaylistTracks.name,
-            (state, action) => {
-                console.log(action)
             }
         );
     }

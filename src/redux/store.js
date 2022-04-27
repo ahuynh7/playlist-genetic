@@ -1,15 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
 
 import authorizationReducer from './slices/authorizationSlice';
-import userReducer from './slices/userSlice';
+import userReducer, { getPlaylistTracks } from './slices/userSlice';
 
-const storeParameter = {        //selector state slices which hold its respective data
+//middleware to listen to certain dispatches and throttle api calls
+const listenerMiddleware = createListenerMiddleware();      //similar to createSlice
+
+listenerMiddleware.startListening({
+    actionCreator: getPlaylistTracks.rejected,
+
+    effect: async (action, listenerApi) => {
+        console.log(listenerApi.getOriginalState())
+    }
+});
+
+const store = configureStore({        //selector state slices which hold its respective data
     reducer: {
         authorization: authorizationReducer,
         user: userReducer
     },
-
-};
-const store = configureStore(storeParameter);
+    middleware: getDefaultMiddleware =>
+        //listenerMiddleware is prepended to avoid errors in serializability checks
+        getDefaultMiddleware().prepend(listenerMiddleware.middleware)
+});
 
 export default store;
