@@ -1,27 +1,21 @@
-import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware from '@redux-saga/core';
 
 import authorizationReducer from './slices/authorizationSlice';
-import userReducer, { getPlaylistTracks } from './slices/userSlice';
+import userReducer from './slices/userSlice';
+import userSaga from './sagas/userSaga';
 
-//middleware to listen to certain dispatches and throttle api calls
-const listenerMiddleware = createListenerMiddleware();      //similar to createSlice
-
-listenerMiddleware.startListening({
-    actionCreator: getPlaylistTracks.rejected,
-
-    effect: async (action, listenerApi) => {
-        console.log(listenerApi.getOriginalState())
-    }
-});
+//saga middleware to listen to certain dispatches and throttle api calls
+const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({        //selector state slices which hold its respective data
     reducer: {
         authorization: authorizationReducer,
         user: userReducer
     },
-    middleware: getDefaultMiddleware =>
-        //listenerMiddleware is prepended to avoid errors in serializability checks
-        getDefaultMiddleware().prepend(listenerMiddleware.middleware)
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sagaMiddleware)
 });
+
+sagaMiddleware.run(userSaga);       //listener
 
 export default store;

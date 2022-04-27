@@ -32,7 +32,7 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 50,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
@@ -61,7 +61,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 50,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
@@ -90,7 +90,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 50,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
             };
@@ -100,7 +100,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
                 .then(({data}) => data);
         }
         catch (error) {
-            return rejectWithValue(error.response.data.data);
+            return rejectWithValue(error.response.data);
         }
     },
     {
@@ -120,7 +120,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
             };
             let params = {
                 fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
-                limit: 50,      //groups of 50 is max
+                limit: 50,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
             };
@@ -130,7 +130,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
                 .then(({data}) => data);
         }
         catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(Object.assign(error.response.data, error.response.headers));
         }
     },
     {
