@@ -193,7 +193,8 @@ export const userSlice = createSlice({
             (state, {meta, payload}) => {
                 state.playlists[meta.arg.playlistId].tracks.items.push.apply(
                     state.playlists[meta.arg.playlistId].tracks.items,
-                    payload.items.filter(e => !e.track.is_local)     //remove local tracks
+                    payload.items.filter(e => !e.track?.is_local)     //remove local tracks
+                    //todo: figure out why track can be null?
                 );
             }
         );

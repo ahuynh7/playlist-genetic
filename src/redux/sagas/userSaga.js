@@ -61,7 +61,7 @@ function* userSaga() {
         fork(throttle, getUserTopArtists.fulfilled, getUserTopArtists),
     ]);
 
-    //every rejection, send to be retried.  hopefully this wouldn't be used
+    //every rejection, send to be retried.  hopefully this shouldn't execute
     yield takeEvery(getPlaylistTracks.rejected, retryGetPlaylistTracks);        
     
     yield takeEvery(getUserPlaylists.fulfilled, handleGetUserPlaylists);
