@@ -87,17 +87,11 @@ export const useUserPlaylistFetch = () => {
     const [playlists, setPlaylists] = useState(state.playlists);
     const dispatch = useDispatch();
 
-    const fetchTracks = useCallback(async playlist => {
-        let next = null;
-        
-        do {
-            next = await dispatch(getPlaylistTracks({
-                accessToken, next, playlistId: playlist.id,
-                ownerId: playlist.owner.id, collaborative: playlist.collaborative
-            }))
-                .then(({payload}) => payload.next)
-                .catch(() => null);
-        } while (next);
+    const fetchTracks = useCallback(playlist => {
+        dispatch(getPlaylistTracks({
+            accessToken, playlistId: playlist.id,
+            ownerId: playlist.owner.id, collaborative: playlist.collaborative
+        }));
 
     }, [accessToken, dispatch]);
 
