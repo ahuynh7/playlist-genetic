@@ -37,14 +37,10 @@ export const useUserTopTrackFetch = timeRange => {
     const [topTracks, setTopTracks] = useState(state.top.tracks);
     const dispatch = useDispatch();
 
-    const fetch = useCallback(async () => {
-        let next = null;
-        
-        do {
-            next = await dispatch(getUserTopTracks({accessToken, next, timeRange}))
-                .then(({payload}) => payload.next)
-        } while (next);
-    }, [accessToken, dispatch, timeRange]);
+    const fetch = useCallback(() => 
+        dispatch(getUserTopTracks({accessToken, timeRange}))
+
+    , [accessToken, dispatch, timeRange]);
 
     useEffect(() => {
         if (isAuthorized) fetch();
@@ -62,14 +58,10 @@ export const useUserTopArtistFetch = timeRange => {
     const [topArtists, setTopArtists] = useState(state.top.artists);
     const dispatch = useDispatch();
     
-    const fetch = useCallback(async () => {
-        let next = null;
-        
-        do {
-            next = await dispatch(getUserTopArtists({accessToken, next, timeRange}))
-                .then(({payload}) => payload.next)
-        } while (next);
-    }, [accessToken, dispatch, timeRange]);
+    const fetch = useCallback(() => 
+        dispatch(getUserTopArtists({accessToken, timeRange}))
+
+    , [accessToken, dispatch, timeRange]);
 
     useEffect(() => {
         if (isAuthorized) fetch();
@@ -87,34 +79,10 @@ export const useUserPlaylistFetch = () => {
     const [playlists, setPlaylists] = useState(state.playlists);
     const dispatch = useDispatch();
 
-    const fetchTracks = useCallback(playlist => {
-        dispatch(getPlaylistTracks({
-            accessToken, playlistId: playlist.id,
-            ownerId: playlist.owner.id, collaborative: playlist.collaborative
-        }));
-
-    }, [accessToken, dispatch]);
-
-    const fetchPlaylists = useCallback(async () => {
-        let next = null;
-        
-        do {
-            next = await dispatch(getUserPlaylists({accessToken, next}))
-                .then(({payload}) => {
-                    //within playlist payload, fetch tracks for each
-                    //[payload.items[0]].map(e => fetchTracks(e));
-                    payload.items.map(e => fetchTracks(e));
-
-                    return payload.next;
-                })
-        } while (next);
-
-    }, [accessToken, dispatch, fetchTracks]);
-
     useEffect(() => {
-        if (isAuthorized) fetchPlaylists();
+        if (isAuthorized) dispatch(getUserPlaylists({accessToken}));
 
-    }, [isAuthorized, fetchPlaylists]);
+    }, [accessToken, dispatch, isAuthorized]);
 
     useEffect(() => setPlaylists(state.playlists), [state.playlists]);
 
