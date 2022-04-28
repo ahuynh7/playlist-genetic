@@ -32,7 +32,7 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,
+                limit: 100,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
@@ -61,7 +61,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,
+                limit: 100,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
@@ -90,7 +90,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,
+                limit: 50,      //only fetching playlist is limited to 50 items
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
             };

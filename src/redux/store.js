@@ -16,6 +16,6 @@ const store = configureStore({        //selector state slices which hold its res
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sagaMiddleware)
 });
 
-sagaMiddleware.run(userSaga);       //listener
+sagaMiddleware.run(userSaga);       //run listener
 
 export default store;

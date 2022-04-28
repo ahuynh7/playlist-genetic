@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectAuthorization } from '../App';
 import { refreshAccessToken, requestAccessToken } from '../redux/slices/authorizationSlice';
 
 export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
-    const state = useSelector(state => state.authorization);
+    const state = useSelector(selectAuthorization);
     const [accessToken, setAccessToken] = useState(state.accessToken);
     const refreshToken = state.refreshToken;
 
@@ -30,7 +31,7 @@ export const useAuthorization = () => {
 };
 
 export const useRequestAuthorization = () => {
-    const state = useSelector(state => state.authorization);
+    const state = useSelector(selectAuthorization);
     const queryString = require('query-string');
     const AUTHORIZE = 'https://accounts.spotify.com/authorize?';
     const [isAuthorized, setIsAuthorized] = useState(state.isAuthorized);
