@@ -16,8 +16,7 @@ const Main = () => {
         topTracks,
         topArtists
     };
-
-    console.log(contextPackage);
+    
     return (
         <UserContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>
@@ -29,7 +28,7 @@ const Main = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {playlists?.map((playlist, i) => 
+                    {Object.values(playlists).map((playlist, i) => 
                         <tr key={i}>
                             <td>{playlist.name}</td>
                             <td>{playlist.description}</td>

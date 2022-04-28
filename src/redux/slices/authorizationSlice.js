@@ -6,7 +6,7 @@ const TOKEN = 'https://accounts.spotify.com/api/token';
 const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64');
 
 export const requestAccessToken = createAsyncThunk('callback',
-    async (code, thunkAPI) => {
+    async (code, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
@@ -21,16 +21,16 @@ export const requestAccessToken = createAsyncThunk('callback',
 
             return await axios
                 .post(url, null, {headers, params})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
 export const refreshAccessToken = createAsyncThunk('refresh',
-    async (refreshToken, thunkAPI) => {
+    async (refreshToken, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
@@ -44,10 +44,10 @@ export const refreshAccessToken = createAsyncThunk('refresh',
 
             return await axios
                 .post(url, null, {headers, params})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -56,6 +56,7 @@ export const authorizationSlice = createSlice({
     name: 'authorization',
     
     initialState: {
+        initialAccessToken: null,
         isAuthorized: null,
         isPendingAuthorization: null,
         accessToken: null,
@@ -67,6 +68,7 @@ export const authorizationSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(requestAccessToken.fulfilled, 
             (state, {payload}) => {
+                state.initialAccessToken = payload.access_token;
                 state.accessToken = payload.access_token;
                 state.refreshToken = payload.refresh_token;
                 state.isAuthorized = true;
