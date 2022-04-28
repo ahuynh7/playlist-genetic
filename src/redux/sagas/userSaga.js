@@ -1,6 +1,6 @@
-import { actionChannel, all, call, delay, fork, put, take, takeEvery } from 'redux-saga/effects';
+import { actionChannel, all, delay, fork, put, take, takeEvery } from 'redux-saga/effects';
 
-import { getPlaylistTracks, getUserPlaylists, getUserTopArtists } from '../slices/userSlice';
+import { getPlaylistTracks, getUserPlaylists, getUserTopArtists, getUserTopTracks } from '../slices/userSlice';
 
 //handles retry given a 429 error
 function* retryGetPlaylistTracks(action) {
@@ -57,6 +57,7 @@ function* userSaga() {
     yield all([
         fork(throttle, getUserPlaylists.fulfilled, getUserPlaylists),
         fork(throttle, getPlaylistTracks.fulfilled, getPlaylistTracks),
+        fork(throttle, getUserTopTracks.fulfilled, getUserTopTracks),
         fork(throttle, getUserTopArtists.fulfilled, getUserTopArtists),
     ]);
 
