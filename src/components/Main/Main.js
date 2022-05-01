@@ -1,42 +1,47 @@
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import { useUserFetch, useUserPlaylistFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+import { usePlaylistTracksFetch } from "../../hooks/usePlaylist";
+import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
 export const UserContext = createContext();
 
 const Main = () => {
     const user = useUserFetch();
-    const playlists = useUserPlaylistFetch();
-    const topTracks = useUserTopTrackFetch('short_term');
-    const topArtists = useUserTopArtistFetch('short_term');
+    const topTracks = useUserTopTrackFetch();
+    const topArtists = useUserTopArtistFetch();
+    const fetchPlaylistTracks = usePlaylistTracksFetch();
 
-    const contextPackage = {
-        user,
-        playlists,
-        topTracks,
-        topArtists
+    const initialMap = useMemo(() => 
+        Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
+    , []);
+    const [map, setMap] = useState(initialMap);
+
+    const mapTrackList = trackList => { 
+        let tempMap = Object.assign({}, initialMap);
+
+        setMap(() => {
+            for (let track in trackList) {
+                tempMap[trackList[track].popularity]++
+            }
+
+            return tempMap;
+        });
     };
 
-    const map = useRef({});
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            for (let i = 0; i < 100; i++) {
-                map.current[i] = 0
-            }
-            topTracks.forEach(item => {
-                map.current[item.popularity.toString()]++;
-            });
-
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [topTracks]);
-
     return (
-        <UserContext.Provider value={contextPackage}>
+        <UserContext.Provider value={user}>
             <div>welcome {user.display_name}</div>
-            <BarChart width={932} height={400} data={Object.keys(map.current).map(e => ({name: e, freq: map.current[e]}))}>
+            <p>top tracks</p>
+            <li>
+                {Object.keys(topTracks).map((e, i) => 
+                    <ul key={i}
+                        onClick={() => mapTrackList(topTracks[e])}
+                    >
+                        {e}
+                    </ul>
+                )}
+            </li>
+            <BarChart width={932} height={400} data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}>
                 <XAxis dataKey='name' />
                 <YAxis />
                 <Bar dataKey='freq' fill='#1db954'/>

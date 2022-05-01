@@ -1,70 +1,24 @@
-import { actionChannel, all, delay, fork, put, take, takeEvery } from 'redux-saga/effects';
+import { delay, put, take } from 'redux-saga/effects';
 
-import { getPlaylistTracks, getUserPlaylists, getUserTopArtists, getUserTopTracks } from '../slices/userSlice';
+import { getUser, getUserTopArtists, getUserTopTracks } from '../slices/userSlice';
+import { requestAccessToken } from '../slices/authorizationSlice';
 
-//handles retry given a 429 error
-function* retryGetPlaylistTracks(action) {
-    if (action.payload.error.status !== 429) return;
-
-    yield delay(parseInt(action.payload['retry-after']) * 1000);        //api returns "retry-after" in seconds
-    yield put(getPlaylistTracks(action.meta.arg));
-}
-
-//spreads getting playlist tracks over time
-function* handleGetUserPlaylists({meta, payload}) {
-    let i = 0, length = payload.items.length;
-
-    while (i < length) {
-        let playlist = payload.items[i];
-        i++;
-
-        yield put(getPlaylistTracks({
-            accessToken: meta.arg.accessToken, playlistId: playlist.id,
-            ownerId: playlist.owner.id, collaborative: playlist.collaborative
-        }));
-        yield delay(322);
-    }
-}
-
-//recursive idea which helps paginate api calls.  pass in AsyncThunkAction
-function* paginate({thunk, meta, payload}) {
-    let next = payload.next;
-
-    if (!next) return;
-
-    meta.arg['next'] = next;      //modify arguments
-    
-    yield put(thunk(meta.arg));
-}
-
-//throttle concept: leaky-bucket, except the bucket has no limit
-function* throttle(pattern, thunk) {
-    //actionChannel takes incoming action patterns to be sequentially executed
-    const throttleChannel = yield actionChannel(pattern);
-    const rate = 10;      //throttles requests time / second
-
-    while (true) {
-        let action = yield take(throttleChannel);
-
-        yield fork(paginate, {...action, thunk});
-        yield delay(1000 / rate);
-    }
-}
+//perform check if user exists within database or not
 
 function* userSaga() {
-    //side effects to be throttled
-    //template: fork(throttle, .fulfilled, ),
-    yield all([
-        fork(throttle, getUserPlaylists.fulfilled, getUserPlaylists),
-        fork(throttle, getPlaylistTracks.fulfilled, getPlaylistTracks),
-        fork(throttle, getUserTopTracks.fulfilled, getUserTopTracks),
-        fork(throttle, getUserTopArtists.fulfilled, getUserTopArtists),
-    ]);
+    //once user data has been fetched, dispatch thunks to get playlist, artists, track data
+    const {payload} = yield take(requestAccessToken.fulfilled);
+    const accessToken = payload.access_token;
+    const terms = ['short_term', 'medium_term', 'long_term'];
 
-    //every rejection, send to be retried.  hopefully this wouldn't be used
-    yield takeEvery(getPlaylistTracks.rejected, retryGetPlaylistTracks);        
+    yield put(getUser(accessToken));
     
-    yield takeEvery(getUserPlaylists.fulfilled, handleGetUserPlaylists);
+    for (let timeRange of terms) {
+        yield put(getUserTopTracks({accessToken, timeRange}));
+        yield put(getUserTopArtists({accessToken, timeRange}));
+        yield delay(420);
+    }
+    
 }
 
 export default userSaga;
