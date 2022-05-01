@@ -3,11 +3,11 @@ import { actionChannel, all, delay, fork, put, take, takeEvery } from 'redux-sag
 import { getPlaylistTracks, getUserPlaylists } from '../slices/userSlice';
 
 //handles retry given a 429 error
-function* retryGetPlaylistTracks(action) {
-    if (action.payload.error.status !== 429) return;
+function* retryGetPlaylistTracks({meta, payload}) {
+    if (payload.error.status !== 429) return;
 
-    yield delay(parseInt(action.payload['retry-after']) * 1000);        //api returns "retry-after" in seconds
-    yield put(getPlaylistTracks(action.meta.arg));
+    yield delay(parseInt(payload['retry-after']) * 1000);        //api returns "retry-after" in seconds
+    yield put(getPlaylistTracks(meta.arg));
 }
 
 //spreads getting playlist tracks over time

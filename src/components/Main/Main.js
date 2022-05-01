@@ -19,19 +19,6 @@ const Main = () => {
         return () => clearTimeout(timer);
     }, [topArtists]);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            for (let i = 0; i < 100; i++) {
-                map.current[i] = 0
-            }
-            topTracks.forEach(item => {
-                map.current[item.popularity.toString()]++;
-            });
-
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [topTracks]);
 
     return (
         <UserContext.Provider value={user}>

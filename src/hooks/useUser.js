@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
     getUser, 
-    getUserPlaylists, 
     getUserTopArtists, 
     getUserTopTracks
 } from "../redux/slices/userSlice";
@@ -26,10 +25,6 @@ export const useUserFetch = () => {
     return user;
 };
 
-//do-while loops below continues to get entities if user's total <entities> > 50
-//spotify responses provide the "next" url to be request
-//if there are no more "next" urls to fetch, stop loop
-//      vvvvv
 export const useUserTopTrackFetch = timeRange => {
     const {accessToken, isAuthorized} = useContext(AuthorizationContext);
     const state = useSelector(selectUser);
@@ -70,20 +65,4 @@ export const useUserTopArtistFetch = timeRange => {
     useEffect(() => setTopArtists(state.top.artists), [state.top.artists]);
 
     return topArtists;
-};
-
-export const useUserPlaylistFetch = () => {
-    const {accessToken, isAuthorized} = useContext(AuthorizationContext);
-    const state = useSelector(selectUser);
-    const [playlists, setPlaylists] = useState(state.playlists);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (isAuthorized) dispatch(getUserPlaylists({accessToken}));
-
-    }, [accessToken, dispatch, isAuthorized]);
-
-    useEffect(() => setPlaylists(state.playlists), [state.playlists]);
-
-    return playlists;
 };
