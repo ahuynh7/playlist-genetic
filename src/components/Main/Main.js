@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { usePlaylistTracksFetch } from "../../hooks/usePlaylist";
 import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
@@ -11,31 +11,37 @@ const Main = () => {
     const topArtists = useUserTopArtistFetch();
     const fetchPlaylistTracks = usePlaylistTracksFetch();
 
-    const map = useRef({});
+    const initialMap = useMemo(() => 
+        Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
+    , []);
+    const [map, setMap] = useState(initialMap);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            console.log(topTracks);
-        }, 3000);
+    const mapTrackList = trackList => { 
+        let tempMap = Object.assign({}, initialMap);
 
-        return () => clearTimeout(timer);
-    }, [topTracks]);
+        setMap(() => {
+            for (let track in trackList) {
+                tempMap[trackList[track].popularity]++
+            }
 
-
+            return tempMap;
+        });
+    };
 
     return (
         <UserContext.Provider value={user}>
             <div>welcome {user.display_name}</div>
+            <p>top tracks</p>
             <li>
                 {Object.keys(topTracks).map((e, i) => 
                     <ul key={i}
-                        onClick={() => fetchPlaylistTracks()}
+                        onClick={() => mapTrackList(topTracks[e])}
                     >
                         {e}
                     </ul>
                 )}
             </li>
-            <BarChart width={932} height={400} data={Object.keys(map.current).map(e => ({name: e, freq: map.current[e]}))}>
+            <BarChart width={932} height={400} data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}>
                 <XAxis dataKey='name' />
                 <YAxis />
                 <Bar dataKey='freq' fill='#1db954'/>
