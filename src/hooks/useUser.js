@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -7,17 +7,19 @@ import {
     getUserTopArtists, 
     getUserTopTracks
 } from "../redux/slices/userSlice";
-import { AuthorizationContext } from "../App";
+import { AuthorizationContext, selectUser } from "../App";
 
+//token refreshes must also not deploy fetches furthermore, after initial fetch
+//      vvvvv
 export const useUserFetch = () => {
     const {accessToken} = useContext(AuthorizationContext);
-    const state = useSelector(state => state.user);
+    const state = useSelector(selectUser);
     const [user, setUser] = useState(state.user);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (accessToken) dispatch(getUser(accessToken));
-    }, [accessToken, dispatch]);
+        if (accessToken && (Object.keys(user).length === 0)) dispatch(getUser(accessToken));
+    }, [accessToken, dispatch, user]);
 
     useEffect(() => setUser(state.user), [state.user]);
 
@@ -27,27 +29,22 @@ export const useUserFetch = () => {
 //do-while loops below continues to get entities if user's total <entities> > 50
 //spotify responses provide the "next" url to be request
 //if there are no more "next" urls to fetch, stop loop
+//      vvvvv
 export const useUserTopTrackFetch = timeRange => {
-    const {accessToken} = useContext(AuthorizationContext);
-    const state = useSelector(state => state.user);
+    const {accessToken, isAuthorized} = useContext(AuthorizationContext);
+    const state = useSelector(selectUser);
     const [topTracks, setTopTracks] = useState(state.top.tracks);
     const dispatch = useDispatch();
-    
+
+    const fetch = useCallback(() => 
+        dispatch(getUserTopTracks({accessToken, timeRange}))
+
+    , [accessToken, dispatch, timeRange]);
+
     useEffect(() => {
-        if (!accessToken) return;
+        if (isAuthorized) fetch();
 
-        const fetch = async () => {
-            let next = null;
-
-            do {
-                next = await dispatch(getUserTopTracks({accessToken, next, timeRange}))
-                    .then(({payload}) => payload.next);
-            } while (next);
-        };
-
-        fetch();
-        
-    }, [accessToken, dispatch, timeRange]);
+    }, [isAuthorized, fetch]);
 
     useEffect(() => setTopTracks(state.top.tracks), [state.top.tracks]);
 
@@ -55,26 +52,20 @@ export const useUserTopTrackFetch = timeRange => {
 };
 
 export const useUserTopArtistFetch = timeRange => {
-    const {accessToken} = useContext(AuthorizationContext);
-    const state = useSelector(state => state.user);
+    const {accessToken, isAuthorized} = useContext(AuthorizationContext);
+    const state = useSelector(selectUser);
     const [topArtists, setTopArtists] = useState(state.top.artists);
     const dispatch = useDispatch();
     
+    const fetch = useCallback(() => 
+        dispatch(getUserTopArtists({accessToken, timeRange}))
+
+    , [accessToken, dispatch, timeRange]);
+
     useEffect(() => {
-        if (!accessToken) return;
+        if (isAuthorized) fetch();
 
-        const fetch = async () => {
-            let next = null;
-
-            do {
-                next = await dispatch(getUserTopArtists({accessToken, next, timeRange}))
-                    .then(({payload}) => payload.next);
-            } while (next);
-        };
-
-        fetch();
-        
-    }, [accessToken, dispatch, timeRange]);
+    }, [isAuthorized, fetch]);
 
     useEffect(() => setTopArtists(state.top.artists), [state.top.artists]);
 
@@ -82,26 +73,15 @@ export const useUserTopArtistFetch = timeRange => {
 };
 
 export const useUserPlaylistFetch = () => {
-    const {accessToken} = useContext(AuthorizationContext);
-    const state = useSelector(state => state.user);
+    const {accessToken, isAuthorized} = useContext(AuthorizationContext);
+    const state = useSelector(selectUser);
     const [playlists, setPlaylists] = useState(state.playlists);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!accessToken) return;
+        if (isAuthorized) dispatch(getUserPlaylists({accessToken}));
 
-        const fetch = async () => {
-            let next = null;
-            
-            do {
-                next = await dispatch(getUserPlaylists({accessToken, next}))
-                    .then(({payload}) => payload.next);
-            } while (next);
-        };
-
-        fetch();
-        
-    }, [accessToken, dispatch]);
+    }, [accessToken, dispatch, isAuthorized]);
 
     useEffect(() => setPlaylists(state.playlists), [state.playlists]);
 

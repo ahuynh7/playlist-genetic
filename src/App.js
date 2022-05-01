@@ -1,16 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { createContext } from 'react';
+import { createSelector } from '@reduxjs/toolkit';
 
 import {
     useAuthorization,
     useRequestAuthorization
 } from './hooks/useAuthorization';
 
-import Home from './components/Home/Home';
-import NotFound from './components/Home/NotFound';
-import Main from './components/Main/Main';
+import Home from './components/Home';
+import NotFound from './components/NotFound';
+import Main from './components/Main';
+
 
 export const AuthorizationContext = createContext();
+export const selectAuthorization = createSelector(state => state.authorization, i => i);
+export const selectUser = createSelector(state => state.user, i => i);
 
 const App = () => {
     const {
@@ -19,6 +23,7 @@ const App = () => {
         requestAuthorization
     } = useRequestAuthorization();
     const accessToken = useAuthorization();
+    
     const contextPackage = {
         accessToken,
         isAuthorized, 

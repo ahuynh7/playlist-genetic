@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+const SPOTIFY = 'https://api.spotify.com/v1';
 const ME = 'https://api.spotify.com/v1/me';
 
 export const getUser = createAsyncThunk('me',
-    (accessToken, thunkAPI) => {
+    async (accessToken, {rejectWithValue}) => {
         try {
             let url = ME;
             let headers = {
@@ -12,18 +13,18 @@ export const getUser = createAsyncThunk('me',
                 'Content-Type': 'application/json'
             };
 
-            return axios
+            return await axios
                 .get(url, {headers})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
     }
 );
 
 export const getUserTopTracks = createAsyncThunk('top/tracks',
-    ({accessToken, next=null, timeRange}, thunkAPI) => {
+    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
         try {
             let url = ME + '/top/tracks';
             let headers = {
@@ -31,24 +32,28 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 100,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
             };
 
-            return axios                
+            return await axios                
                 .get(url, {headers, params})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
+    },
+    {
+        //only execute on first accessToken 
+        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
     }
 );
 
 export const getUserTopArtists = createAsyncThunk('top/artists',
-    ({accessToken, next=null, timeRange}, thunkAPI) => {
+    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
         try {
             let url = ME + '/top/artists';
             let headers = {
@@ -56,24 +61,28 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 100,
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
                 time_range: timeRange
             };
 
-            return axios                
+            return await axios                
                 .get(url, {headers, params})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
+    },
+    {
+        //only execute on first accessToken 
+        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
     }
 );
 
 export const getUserPlaylists = createAsyncThunk('playlists',
-    ({accessToken, next=null}, thunkAPI) => {
+    async ({accessToken, next=null}, {rejectWithValue}) => {
         try {
             let url = ME + '/playlists';
             let headers = {
@@ -81,18 +90,52 @@ export const getUserPlaylists = createAsyncThunk('playlists',
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 50,      //groups of 50 is max
+                limit: 50,      //only fetching playlist is limited to 50 items
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
             };
 
-            return axios                
+            return await axios
                 .get(url, {headers, params})
-                .then(response => response.data);
+                .then(({data}) => data);
         }
         catch (error) {
-            return thunkAPI.rejectWithValue({error: error.message});
+            return rejectWithValue(error.response.data);
         }
+    },
+    {
+        //only execute on first accessToken 
+        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+    }
+);
+
+export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
+    async ({accessToken, next=null, playlistId}, {rejectWithValue}) => {
+        try {
+            let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
+            let headers = {
+                Authorization: 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+                //because so many calls are made per second, api will limit calls; retry after 1 second
+            };
+            let params = {
+                fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
+                limit: 100,      //groups of 100 is max
+                //if next is being passed, use offset param, else keep null
+                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
+            };
+            
+            return await axios                
+                .get(url, {headers, params})
+                .then(({data}) => data);
+        }
+        catch (error) {
+            return rejectWithValue(Object.assign(error.response.data, error.response.headers));
+        }
+    },
+    {
+        //if the playlist is not owned by user and not collaborative
+        condition: ({collaborative, ownerId}, {getState}) => (ownerId === getState().user.user.id) && !collaborative
     }
 );
 
@@ -105,7 +148,7 @@ export const userSlice = createSlice({
             tracks: [],
             artists: []
         },
-        playlists: [],
+        playlists: {},
     },
 
     //push.apply() joins elements of arrays together
@@ -125,12 +168,32 @@ export const userSlice = createSlice({
             }
         );
 
+        builder.addCase(getUserTopArtists.fulfilled,
+            (state, {payload}) => {
+                state.top.artists.push.apply(
+                    state.top.artists,
+                    payload.items
+                );
+            }
+        );
+
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
-                state.playlists.push.apply(     
-                    state.playlists, 
-                    payload.items.filter(e => e.owner.id === state.user.id)
+                //then appends to state as key: id and value: playlist pair
+                payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
+                    .forEach(e => {
+                        e.tracks['items'] = [];        //adding items element to tracks
+                        state.playlists[e.id] = e;
+                    });
+            }
+        );
+
+        builder.addCase(getPlaylistTracks.fulfilled,
+            (state, {meta, payload}) => {
+                state.playlists[meta.arg.playlistId].tracks.items.push.apply(
+                    state.playlists[meta.arg.playlistId].tracks.items,
+                    payload.items.filter(e => !e.track.is_local)     //remove local tracks
                 );
             }
         );

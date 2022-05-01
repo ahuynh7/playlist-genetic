@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { Table } from "react-bootstrap";
-import { useUserFetch, useUserPlaylistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+import { createContext, useEffect, useRef } from "react";
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import { useUserFetch, useUserPlaylistFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
 export const UserContext = createContext();
 
@@ -8,33 +8,39 @@ const Main = () => {
     const user = useUserFetch();
     const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch('short_term');
+    const topArtists = useUserTopArtistFetch('short_term');
 
     const contextPackage = {
         user,
         playlists,
-        topTracks
+        topTracks,
+        topArtists
     };
 
-    console.log(contextPackage);
+    const map = useRef({});
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            for (let i = 0; i < 100; i++) {
+                map.current[i] = 0
+            }
+            topTracks.forEach(item => {
+                map.current[item.popularity.toString()]++;
+            });
+
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [topTracks]);
+
     return (
         <UserContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>
-            <Table>
-                <thead>
-                    <tr>
-                        <th>name</th>
-                        <th>description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {playlists?.map((playlist, i) => 
-                        <tr key={i}>
-                            <td>{playlist.name}</td>
-                            <td>{playlist.description}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </Table>
+            <BarChart width={932} height={400} data={Object.keys(map.current).map(e => ({name: e, freq: map.current[e]}))}>
+                <XAxis dataKey='name' />
+                <YAxis />
+                <Bar dataKey='freq' fill='#1db954'/>
+            </BarChart>
         </UserContext.Provider>
     );
 };
