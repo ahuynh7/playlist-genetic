@@ -1,22 +1,26 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { FormSelect } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import { usePlaylistTracksFetch } from "../../hooks/usePlaylist";
+import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
 export const UserContext = createContext();
 
 const Main = () => {
     const user = useUserFetch();
+    const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch();
     const topArtists = useUserTopArtistFetch();
-    const fetchPlaylistTracks = usePlaylistTracksFetch();
+    const {fetchPlaylistTracks, targetPlaylist} = usePlaylistTracksFetch();
 
     const initialMap = useMemo(() => 
         Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
     , []);
     const [map, setMap] = useState(initialMap);
 
-    const mapTrackList = trackList => { 
+    //function to map frequencies of an item's trait given an array
+    //artists can only use popularity
+    const mapTrackList = useCallback(trackList => { 
         let tempMap = Object.assign({}, initialMap);
 
         setMap(() => {
@@ -26,7 +30,16 @@ const Main = () => {
 
             return tempMap;
         });
-    };
+    }, [initialMap]);
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
+        }, 420);
+
+        return () => clearTimeout(timer);
+        
+    }, [mapTrackList, targetPlaylist]);
 
     return (
         <UserContext.Provider value={user}>
@@ -41,6 +54,26 @@ const Main = () => {
                     </ul>
                 )}
             </li>
+            <p>top artists</p>
+            <li>
+                {Object.keys(topArtists).map((e, i) => 
+                    <ul key={i}
+                        onClick={() => mapTrackList(topArtists[e])}
+                    >
+                        {e}
+                    </ul>
+                )}
+            </li>
+            <p>playlists</p>
+            <FormSelect
+                onChange={event => fetchPlaylistTracks(event.target.value)}
+            >
+                {Object.keys(playlists).map((e, i) => 
+                    <option key={i} value={e}>
+                        {playlists[e].name}
+                    </option>
+                )}
+            </FormSelect>
             <BarChart width={932} height={400} data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}>
                 <XAxis dataKey='name' />
                 <YAxis />
