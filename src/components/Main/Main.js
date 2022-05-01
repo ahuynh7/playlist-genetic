@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { FormSelect } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
@@ -11,7 +11,7 @@ const Main = () => {
     const playlists = useUserPlaylistFetch();
     const topTracks = useUserTopTrackFetch();
     const topArtists = useUserTopArtistFetch();
-    const fetchPlaylistTracks = usePlaylistTracksFetch();
+    const {fetchPlaylistTracks, targetPlaylist} = usePlaylistTracksFetch();
 
     const initialMap = useMemo(() => 
         Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
@@ -20,7 +20,7 @@ const Main = () => {
 
     //function to map frequencies of an item's trait given an array
     //artists can only use popularity
-    const mapTrackList = trackList => { 
+    const mapTrackList = useCallback(trackList => { 
         let tempMap = Object.assign({}, initialMap);
 
         setMap(() => {
@@ -30,7 +30,16 @@ const Main = () => {
 
             return tempMap;
         });
-    };
+    }, [initialMap]);
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
+        }, 420);
+
+        return () => clearTimeout(timer);
+        
+    }, [mapTrackList, targetPlaylist]);
 
     return (
         <UserContext.Provider value={user}>

@@ -35,7 +35,7 @@ export const getUserPlaylists = createAsyncThunk('playlists',
 );
 
 export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
-    async ({accessToken, next=null, playlistId}, {rejectWithValue}) => {
+    async ({accessToken, next=null, playlistId}, {getState, rejectWithValue}) => {
         try {
             let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
             let headers = {
@@ -44,7 +44,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
                 //because so many calls are made per second, api will limit calls; retry after 1 second
             };
             let params = {
-
+                market: getState().user.user.country,       //specify market value to get accurate popularity index
                 fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
@@ -63,8 +63,8 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
         //if the playlist is not owned by user and not collaborative
         condition: ({playlistId}, {getState}) => {
             let playlist = getState().playlist.playlists[playlistId];
-            
-            return (playlist.ownerId === getState().user.user.id) && !playlist.collaborative
+
+            return (playlist.owner.id === getState().user.user.id) && !playlist.collaborative
         }
     }
 );
@@ -90,7 +90,6 @@ export const playlistSlice = createSlice({
 
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {meta, payload}) => {
-                console.log(payload)
                 //filters only playlists own/created by the user; excludes followed playlists
                 //then appends to state as key: id and value: playlist pair
                 payload.items
