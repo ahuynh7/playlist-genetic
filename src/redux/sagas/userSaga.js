@@ -19,6 +19,7 @@ function* userSaga() {
         yield delay(420);
     }
     
+    return;
 }
 
 export default userSaga;

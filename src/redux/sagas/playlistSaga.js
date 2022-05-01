@@ -1,8 +1,8 @@
 import { actionChannel, all, delay, fork, put, take, takeEvery } from 'redux-saga/effects';
 import { requestAccessToken } from '../slices/authorizationSlice';
 
-import { getPlaylistTracks } from '../slices/playlistSlice';
-import { getUserPlaylists } from '../slices/userSlice';
+import { getPlaylistTracks, getUserPlaylists } from '../slices/playlistSlice';
+import { getUser } from '../slices/userSlice';
 
 //handles retry given a 429 error
 function* retryGetPlaylistTracks({meta, payload}) {
@@ -48,6 +48,7 @@ function* playlistSaga() {
     ]);
 
     //initial fetch of playlists
+    yield take(getUser.fulfilled);      //ensures user data is fetched first
     yield put(getUserPlaylists({accessToken: payload.access_token}));
 
     //every rejection, send to be retried.  hopefully this shouldn't execute

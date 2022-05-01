@@ -86,34 +86,6 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
     }
 );
 
-export const getUserPlaylists = createAsyncThunk('playlists',
-    async ({accessToken, next=null}, {rejectWithValue}) => {
-        try {
-            let url = ME + '/playlists';
-            let headers = {
-                Authorization: 'Bearer ' + accessToken,
-                'Content-Type': 'application/json'
-            };
-            let params = {
-                limit: 50,      //only fetching playlist is limited to 50 items
-                //if next is being passed, use offset param, else keep null
-                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
-            };
-
-            return await axios
-                .get(url, {headers, params})
-                .then(({data}) => data);
-        }
-        catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    },
-    {
-        //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
-    }
-);
-
 export const userSlice = createSlice({
     name: 'user',
 
@@ -131,8 +103,7 @@ export const userSlice = createSlice({
                 mediumTerm: {},
                 longTerm: {}
             }
-        },
-        playlists: {},
+        }
     },
 
     //push.apply() joins elements of arrays together
@@ -156,19 +127,6 @@ export const userSlice = createSlice({
                 payload.items.forEach(artist => {
                     state.top.artists[timeRangeEnum[meta.arg.timeRange]][artist.id] = artist;
                 });
-            }
-        );
-
-        builder.addCase(getUserPlaylists.fulfilled,
-            (state, {payload}) => {
-                //filters only playlists own/created by the user; excludes followed playlists
-                //then appends to state as key: id and value: playlist pair
-                payload.items
-                    .filter(e => (e.owner.id === state.user.id) && !e.collaborative)
-                    .forEach(e => {
-                        e.tracks['items'] = {};        //adding items element to tracks
-                        state.playlists[e.id] = e;
-                    });
             }
         );
     }

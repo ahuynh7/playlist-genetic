@@ -1,7 +1,38 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+const ME = 'https://api.spotify.com/v1/me';
 const SPOTIFY = 'https://api.spotify.com/v1';
+
+export const getUserPlaylists = createAsyncThunk('playlists',
+    async ({accessToken, next=null}, {fulfillWithValue, getState, rejectWithValue}) => {
+        try {
+            let url = ME + '/playlists';
+            let headers = {
+                Authorization: 'Bearer ' + accessToken,
+                'Content-Type': 'application/json'
+            };
+            let params = {
+                limit: 50,      //only fetching playlist is limited to 50 items
+                //if next is being passed, use offset param, else keep null
+                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
+            };
+
+            //using fulfillWithValue to inject extra meta data (userId)
+            return fulfillWithValue(await axios
+                .get(url, {headers, params})
+                .then(({data}) => data)
+            , {userId: getState().user.user.id});
+        }
+        catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+    {
+        //only execute on first accessToken 
+        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+    }
+);
 
 export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
     async ({accessToken, next=null, playlistId}, {rejectWithValue}) => {
@@ -30,7 +61,11 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
     },
     {
         //if the playlist is not owned by user and not collaborative
-        condition: ({collaborative, ownerId}, {getState}) => (ownerId === getState().user.user.id) && !collaborative
+        condition: ({playlistId}, {getState}) => {
+            let playlist = getState().playlist.playlists[playlistId];
+            
+            return (playlist.ownerId === getState().user.user.id) && !playlist.collaborative
+        }
     }
 );
 
@@ -50,6 +85,20 @@ export const playlistSlice = createSlice({
                     .forEach(({track}) => {        //adding tracks in key: id and value: track pair
                         state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
                     })   
+            }
+        );
+
+        builder.addCase(getUserPlaylists.fulfilled,
+            (state, {meta, payload}) => {
+                console.log(payload)
+                //filters only playlists own/created by the user; excludes followed playlists
+                //then appends to state as key: id and value: playlist pair
+                payload.items
+                    .filter(e => (e.owner.id === meta.userId) && !e.collaborative)
+                    .forEach(playlist => {
+                        playlist.tracks['items'] = {};        //adding items element to tracks
+                        state.playlists[playlist.id] = playlist;
+                    });
             }
         );
     }
