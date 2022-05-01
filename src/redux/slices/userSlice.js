@@ -4,6 +4,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const SPOTIFY = 'https://api.spotify.com/v1';
 const ME = 'https://api.spotify.com/v1/me';
 
+const timeRangeEnum = {
+    'short_term': 'shortTerm',
+    'medium_term': 'mediumTerm',
+    'long_term': 'longTerm'
+};
+
 export const getUser = createAsyncThunk('me',
     async (accessToken, {rejectWithValue}) => {
         try {
@@ -119,6 +125,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
                 //because so many calls are made per second, api will limit calls; retry after 1 second
             };
             let params = {
+
                 fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
@@ -142,11 +149,20 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
 export const userSlice = createSlice({
     name: 'user',
 
+    //data stored in states as dictionaries to be easily accessed
     initialState: {
         user: {},
         top: {
-            tracks: [],
-            artists: []
+            tracks: {
+                shortTerm: {},
+                mediumTerm: {},
+                longTerm: {}
+            },
+            artists: {
+                shortTerm: {},
+                mediumTerm: {},
+                longTerm: {}
+            }
         },
         playlists: {},
     },
@@ -160,20 +176,18 @@ export const userSlice = createSlice({
         );
         
         builder.addCase(getUserTopTracks.fulfilled,
-            (state, {payload}) => {
-                state.top.tracks.push.apply(
-                    state.top.tracks,
-                    payload.items
-                );
+            (state, {meta, payload}) => {
+                payload.items.forEach(track => {
+                    state.top.tracks[timeRangeEnum[meta.arg.timeRange]][track.id] = track;
+                });
             }
         );
 
         builder.addCase(getUserTopArtists.fulfilled,
-            (state, {payload}) => {
-                state.top.artists.push.apply(
-                    state.top.artists,
-                    payload.items
-                );
+            (state, {meta, payload}) => {
+                payload.items.forEach(artist => {
+                    state.top.artists[timeRangeEnum[meta.arg.timeRange]][artist.id] = artist;
+                });
             }
         );
 
@@ -181,9 +195,10 @@ export const userSlice = createSlice({
             (state, {payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
                 //then appends to state as key: id and value: playlist pair
-                payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
+                payload.items
+                    .filter(e => (e.owner.id === state.user.id) && !e.collaborative)
                     .forEach(e => {
-                        e.tracks['items'] = [];        //adding items element to tracks
+                        e.tracks['items'] = {};        //adding items element to tracks
                         state.playlists[e.id] = e;
                     });
             }
@@ -191,11 +206,12 @@ export const userSlice = createSlice({
 
         builder.addCase(getPlaylistTracks.fulfilled,
             (state, {meta, payload}) => {
-                state.playlists[meta.arg.playlistId].tracks.items.push.apply(
-                    state.playlists[meta.arg.playlistId].tracks.items,
-                    payload.items.filter(e => !e.track?.is_local)     //remove local tracks
-                    //todo: figure out why track can be null?
-                );
+                //track is null if item is an episode from podcast
+                payload.items
+                    .filter(({track}) => track ? !track.is_local : false)     //remove local tracks and episodes
+                    .forEach(({track}) => {        //adding tracks in key: id and value: track pair
+                        state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
+                    })   
             }
         );
     }

@@ -21,6 +21,14 @@ const Main = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
+            console.log(topArtists);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [topArtists]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
             for (let i = 0; i < 100; i++) {
                 map.current[i] = 0
             }
