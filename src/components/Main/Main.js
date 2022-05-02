@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { FormSelect } from "react-bootstrap";
-import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 
@@ -35,6 +35,7 @@ const Main = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
+            console.log(targetPlaylist)
         }, 420);
 
         return () => clearTimeout(timer);
@@ -74,11 +75,19 @@ const Main = () => {
                     </option>
                 )}
             </FormSelect>
-            <BarChart width={932} height={400} data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}>
-                <XAxis dataKey='name' />
-                <YAxis />
-                <Bar dataKey='freq' fill='#1db954'/>
-            </BarChart>
+            <ResponsiveContainer height={400}>
+                <BarChart data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}
+                    margin={{top: 20, bottom: 30, left: 10, right: 5}}
+                >
+                    <XAxis dataKey='name' tick={false}>
+                        <Label position='insideBottomRight' value='popularity' />
+                        <Label position='insideBottomLeft' value='popularity' />
+                    </XAxis>
+                    <YAxis label={{value: 'frequency', angle: -90, position: 'insideLeft'}}/>
+                    <Bar dataKey='freq' fill='#1db954'/>
+                </BarChart>
+            </ResponsiveContainer>
+            
         </UserContext.Provider>
     );
 };
