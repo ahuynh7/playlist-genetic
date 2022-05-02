@@ -5,11 +5,11 @@ const ME = 'https://api.spotify.com/v1/me';
 const SPOTIFY = 'https://api.spotify.com/v1';
 
 export const getUserPlaylists = createAsyncThunk('playlists',
-    async ({accessToken, next=null}, {fulfillWithValue, getState, rejectWithValue}) => {
+    async (next=null, {fulfillWithValue, getState, rejectWithValue}) => {
         try {
             let url = ME + '/playlists';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
             let params = {
@@ -30,16 +30,16 @@ export const getUserPlaylists = createAsyncThunk('playlists',
     },
     {
         //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
-    async ({accessToken, next=null, playlistId}, {getState, rejectWithValue}) => {
+    async ({next=null, playlistId}, {getState, rejectWithValue}) => {
         try {
             let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
                 //because so many calls are made per second, api will limit calls; retry after 1 second
             };
@@ -69,11 +69,44 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
     }
 );
 
+export const getTrackFeatures = createAsyncThunk('audio-features',
+    async ({trackIds}, {getState, rejectWithValue}) => {
+        try {
+            let url = SPOTIFY + '/audio-features';
+            let headers = {
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
+                'Content-Type': 'application/json'
+            };
+            let params = {
+                //id of all tracks to be fetched
+                ids: trackIds.join(',')
+            };
+
+            return await axios
+                .get(url, {headers, params})
+                .then(({data}) => data);
+        }
+        catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+    {
+        //condition to check if playlist in store exists
+        condition: ({playlistId}, {getState}) => getState().playlist.playlists[playlistId]
+    }
+);
+
 export const playlistSlice = createSlice({
     name: 'playlist',
 
     initialState: {
         playlists: {}
+    },
+
+    reducers: {
+        completePlaylist: (state, {payload}) => {
+            state.playlists[payload].complete = true;
+        }
     },
 
     extraReducers: builder => {
@@ -98,12 +131,27 @@ export const playlistSlice = createSlice({
                 payload.items
                     .filter(e => (e.owner.id === meta.userId) && !e.collaborative)
                     .forEach(playlist => {
+                        playlist['complete'] = null;        //boolean which monitors if all playlist tracks have been fetched
                         playlist.tracks['items'] = {};        //adding items element to tracks
                         state.playlists[playlist.id] = playlist;
                     });
             }
         );
+
+        builder.addCase(getTrackFeatures.fulfilled,
+            (state, {meta, payload}) => {
+                //appends tracks with its audio features
+                console.log(meta, payload)
+                payload.audio_features.forEach(feature => {
+                    Object.assign(
+                        state.playlists[meta.arg.playlistId].tracks.items[feature.id],
+                        feature
+                    );
+                });
+            }
+        );
     }
 });
 
+export const {completePlaylist} = playlistSlice.actions;
 export default playlistSlice.reducer;

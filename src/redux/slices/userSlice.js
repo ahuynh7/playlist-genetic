@@ -10,11 +10,11 @@ const timeRangeEnum = {
 };
 
 export const getUser = createAsyncThunk('me',
-    async (accessToken, {rejectWithValue}) => {
+    async (_, {getState, rejectWithValue}) => {
         try {
             let url = ME;
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
 
@@ -28,16 +28,16 @@ export const getUser = createAsyncThunk('me',
     },
     {
         //only execute on first accessToken 
-        condition: (accessToken, {getState}) => getState().authorization.initialAccessToken === accessToken
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const getUserTopTracks = createAsyncThunk('top/tracks',
-    async ({accessToken, timeRange}, {rejectWithValue}) => {
+    async (timeRange, {getState, rejectWithValue}) => {
         try {
             let url = ME + '/top/tracks';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
             let params = {
@@ -55,16 +55,16 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
     },
     {
         //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const getUserTopArtists = createAsyncThunk('top/artists',
-    async ({accessToken, timeRange}, {rejectWithValue}) => {
+    async (timeRange, {getState, rejectWithValue}) => {
         try {
             let url = ME + '/top/artists';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
             let params = {
@@ -82,7 +82,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
     },
     {
         //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
@@ -117,7 +117,7 @@ export const userSlice = createSlice({
         builder.addCase(getUserTopTracks.fulfilled,
             (state, {meta, payload}) => {
                 payload.items.forEach(track => {
-                    state.top.tracks[timeRangeEnum[meta.arg.timeRange]][track.id] = track;
+                    state.top.tracks[timeRangeEnum[meta.arg]][track.id] = track;
                 });
             }
         );
@@ -125,7 +125,7 @@ export const userSlice = createSlice({
         builder.addCase(getUserTopArtists.fulfilled,
             (state, {meta, payload}) => {
                 payload.items.forEach(artist => {
-                    state.top.artists[timeRangeEnum[meta.arg.timeRange]][artist.id] = artist;
+                    state.top.artists[timeRangeEnum[meta.arg]][artist.id] = artist;
                 });
             }
         );
