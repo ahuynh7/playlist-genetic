@@ -3,7 +3,7 @@ import { delay, put, take } from 'redux-saga/effects';
 import { getUser, getUserTopArtists, getUserTopTracks } from '../slices/userSlice';
 import { requestAccessToken } from '../slices/authorizationSlice';
 
-//perform check if user exists within database or not
+//handle 503 errors?
 
 function* userSaga() {
     //once user data has been fetched, dispatch thunks to get playlist, artists, track data

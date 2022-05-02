@@ -1,4 +1,4 @@
-import { actionChannel, all, delay, fork, put, take, takeEvery } from 'redux-saga/effects';
+import { actionChannel, all, delay, fork, put, race, take, takeEvery } from 'redux-saga/effects';
 import { requestAccessToken } from '../slices/authorizationSlice';
 
 import { getPlaylistTracks, getUserPlaylists } from '../slices/playlistSlice';
@@ -27,7 +27,7 @@ function* paginate({thunk, meta, payload}) {
 export function* throttle(pattern, thunk) {
     //actionChannel takes incoming action patterns to be sequentially executed
     const throttleChannel = yield actionChannel(pattern);
-    const rate = 10;      //throttles requests time / second
+    const rate = 8;      //throttles requests time / second
 
     while (true) {
         let action = yield take(throttleChannel);

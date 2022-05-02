@@ -45,7 +45,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
             };
             let params = {
                 market: getState().user.user.country,       //specify market value to get accurate popularity index
-                fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
+                fields: 'items(track(id,is_local,restrictions,name,popularity)),next,total',
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
@@ -81,7 +81,10 @@ export const playlistSlice = createSlice({
             (state, {meta, payload}) => {
                 //track is null if item is an episode from podcast
                 payload.items
-                    .filter(({track}) => track ? !track.is_local : false)     //remove local tracks and episodes
+                    .filter(({track}) => track ?        //remove local tracks, episodes, and restricted tracks
+                        !(track.is_local || track.restrictions)
+                        :
+                        false)     
                     .forEach(({track}) => {        //adding tracks in key: id and value: track pair
                         state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
                     })   
