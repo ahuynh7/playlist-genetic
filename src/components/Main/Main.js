@@ -1,5 +1,5 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import { FormSelect } from "react-bootstrap";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { Button, ButtonGroup, ButtonToolbar, FormSelect } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
@@ -13,35 +13,71 @@ const Main = () => {
     const topArtists = useUserTopArtistFetch();
     const {fetchPlaylistTracks, targetPlaylist} = usePlaylistTracksFetch();
 
-    const initialMap = useMemo(() => 
-        Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
-    , []);
-    const [map, setMap] = useState(initialMap);
+    const [map, setMap] = useState({});
+    const [feature, setFeature] = useState('popularity');       //default feature is popular
+
+    const features = [
+        'popularity',
+        'acousticness',
+        'danceability',
+        'energy',
+        'instrumentalness',
+        'liveness',
+        'loudness',
+        'speechiness',
+        'tempo',
+        'valence'
+    ];
 
     //function to map frequencies of an item's trait given an array
     //artists can only use popularity
     const mapTrackList = useCallback(trackList => { 
-        let tempMap = Object.assign({}, initialMap);
+        let tempMap = {};
 
-        setMap(() => {
-            for (let track in trackList) {
-                tempMap[trackList[track].popularity]++
+        for (let track in trackList) {
+            let dataPoint = Number(trackList[track][feature].toFixed(2));
+            
+            //remove decimals if feature are these types.  causes data bars to be miniscule
+            if (feature === 'tempo' || feature === 'loudness') dataPoint = Math.round(dataPoint);
+
+            if (tempMap[dataPoint]) {
+                tempMap[dataPoint]++;
             }
+            else {
+                tempMap[dataPoint] = 1;
+            }
+        }
+        console.log(tempMap)
+        setMap(tempMap);
 
-            return tempMap;
-        });
-    }, [initialMap]);
+    }, [feature]);
     
+    const configureDomain = () => {
+        switch (feature) {
+        case 'tempo':
+            return [50, 200];
+        
+        case 'loudness':
+            return [-60, 0];
+
+        default:
+            return [
+                dataMin => dataMin <= 1 ? -0.01 : -1, 
+                dataMax => dataMax <= 1 ? 1 : 100
+            ]
+        }
+    }
+
+    //useEffect here handles playlist changes
     useEffect(() => {
         const timer = setTimeout(() => {
             if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
-            console.log(targetPlaylist)
-        }, 420);
+        }, 690);
 
         return () => clearTimeout(timer);
         
     }, [mapTrackList, targetPlaylist]);
-
+    
     return (
         <UserContext.Provider value={user}>
             <div>welcome {user.display_name}</div>
@@ -76,18 +112,31 @@ const Main = () => {
                 )}
             </FormSelect>
             <ResponsiveContainer height={400}>
-                <BarChart data={Object.keys(map)?.map(e => ({name: e, freq: map[e]}))}
+                <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
                     margin={{top: 20, bottom: 30, left: 10, right: 5}}
                 >
-                    <XAxis dataKey='name' tick={false}>
-                        <Label position='insideBottomRight' value='popularity' />
-                        <Label position='insideBottomLeft' value='popularity' />
+                    <XAxis dataKey='value' allowDataOverflow
+                        tick={feature === 'tempo' || feature === 'loudness'} type='number'
+                        domain={configureDomain()}
+                    >
+                        <Label position='insideBottomRight' offset={-5} value={`greater ${feature}`} />
+                        <Label position='insideBottomLeft' offset={-5} value={`lesser ${feature}`} />
                     </XAxis>
                     <YAxis label={{value: 'frequency', angle: -90, position: 'insideLeft'}}/>
                     <Bar dataKey='freq' fill='#1db954'/>
                 </BarChart>
             </ResponsiveContainer>
-            
+            <ButtonToolbar>
+                <ButtonGroup size='sm'>
+                    {features.map((feature, i) => 
+                        <Button variant='outline-secondary' key={i}
+                            onClick={() => setFeature(feature)}
+                        >
+                            {feature}
+                        </Button>
+                    )}
+                </ButtonGroup>
+            </ButtonToolbar>
         </UserContext.Provider>
     );
 };

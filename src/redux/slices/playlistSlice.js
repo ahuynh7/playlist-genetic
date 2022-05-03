@@ -141,7 +141,6 @@ export const playlistSlice = createSlice({
         builder.addCase(getTrackFeatures.fulfilled,
             (state, {meta, payload}) => {
                 //appends tracks with its audio features
-                console.log(meta, payload)
                 payload.audio_features.forEach(feature => {
                     Object.assign(
                         state.playlists[meta.arg.playlistId].tracks.items[feature.id],
