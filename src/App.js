@@ -11,9 +11,9 @@ import Home from './components/Home';
 import NotFound from './components/NotFound';
 import Main from './components/Main';
 
-
 export const AuthorizationContext = createContext();
 export const selectAuthorization = createSelector(state => state.authorization, i => i);
+export const selectPlaylist = createSelector(state => state.playlist, i => i);
 export const selectUser = createSelector(state => state.user, i => i);
 
 const App = () => {

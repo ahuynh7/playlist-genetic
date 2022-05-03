@@ -1,15 +1,20 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const SPOTIFY = 'https://api.spotify.com/v1';
 const ME = 'https://api.spotify.com/v1/me';
 
+const timeRangeEnum = {
+    'short_term': 'shortTerm',
+    'medium_term': 'mediumTerm',
+    'long_term': 'longTerm'
+};
+
 export const getUser = createAsyncThunk('me',
-    async (accessToken, {rejectWithValue}) => {
+    async (_, {getState, rejectWithValue}) => {
         try {
             let url = ME;
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
 
@@ -20,21 +25,23 @@ export const getUser = createAsyncThunk('me',
         catch (error) {
             return rejectWithValue(error.response.data);
         }
+    },
+    {
+        //only execute on first accessToken 
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const getUserTopTracks = createAsyncThunk('top/tracks',
-    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
+    async (timeRange, {getState, rejectWithValue}) => {
         try {
             let url = ME + '/top/tracks';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 100,
-                //if next is being passed, use offset param, else keep null
-                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
+                limit: 50,
                 time_range: timeRange
             };
 
@@ -48,22 +55,20 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
     },
     {
         //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const getUserTopArtists = createAsyncThunk('top/artists',
-    async ({accessToken, next=null, timeRange}, {rejectWithValue}) => {
+    async (timeRange, {getState, rejectWithValue}) => {
         try {
             let url = ME + '/top/artists';
             let headers = {
-                Authorization: 'Bearer ' + accessToken,
+                Authorization: 'Bearer ' + getState().authorization.accessToken,
                 'Content-Type': 'application/json'
             };
             let params = {
-                limit: 100,
-                //if next is being passed, use offset param, else keep null
-                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null,
+                limit: 50,
                 time_range: timeRange
             };
 
@@ -77,78 +82,28 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
     },
     {
         //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
-    }
-);
-
-export const getUserPlaylists = createAsyncThunk('playlists',
-    async ({accessToken, next=null}, {rejectWithValue}) => {
-        try {
-            let url = ME + '/playlists';
-            let headers = {
-                Authorization: 'Bearer ' + accessToken,
-                'Content-Type': 'application/json'
-            };
-            let params = {
-                limit: 50,      //only fetching playlist is limited to 50 items
-                //if next is being passed, use offset param, else keep null
-                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
-            };
-
-            return await axios
-                .get(url, {headers, params})
-                .then(({data}) => data);
-        }
-        catch (error) {
-            return rejectWithValue(error.response.data);
-        }
-    },
-    {
-        //only execute on first accessToken 
-        condition: ({accessToken}, {getState}) => getState().authorization.initialAccessToken === accessToken
-    }
-);
-
-export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/tracks',
-    async ({accessToken, next=null, playlistId}, {rejectWithValue}) => {
-        try {
-            let url = SPOTIFY + '/playlists/' + playlistId + '/tracks';
-            let headers = {
-                Authorization: 'Bearer ' + accessToken,
-                'Content-Type': 'application/json'
-                //because so many calls are made per second, api will limit calls; retry after 1 second
-            };
-            let params = {
-                fields: 'items(track(id,is_local,name,popularity,release_date)),next,total',
-                limit: 100,      //groups of 100 is max
-                //if next is being passed, use offset param, else keep null
-                offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
-            };
-            
-            return await axios                
-                .get(url, {headers, params})
-                .then(({data}) => data);
-        }
-        catch (error) {
-            return rejectWithValue(Object.assign(error.response.data, error.response.headers));
-        }
-    },
-    {
-        //if the playlist is not owned by user and not collaborative
-        condition: ({collaborative, ownerId}, {getState}) => (ownerId === getState().user.user.id) && !collaborative
+        condition: (_, {getState}) => getState().authorization.initialAccessToken === getState().authorization.accessToken
     }
 );
 
 export const userSlice = createSlice({
     name: 'user',
 
+    //data stored in states as dictionaries to be easily accessed
     initialState: {
         user: {},
         top: {
-            tracks: [],
-            artists: []
-        },
-        playlists: {},
+            tracks: {
+                shortTerm: {},
+                mediumTerm: {},
+                longTerm: {}
+            },
+            artists: {
+                shortTerm: {},
+                mediumTerm: {},
+                longTerm: {}
+            }
+        }
     },
 
     //push.apply() joins elements of arrays together
@@ -160,41 +115,18 @@ export const userSlice = createSlice({
         );
         
         builder.addCase(getUserTopTracks.fulfilled,
-            (state, {payload}) => {
-                state.top.tracks.push.apply(
-                    state.top.tracks,
-                    payload.items
-                );
+            (state, {meta, payload}) => {
+                payload.items.forEach(track => {
+                    state.top.tracks[timeRangeEnum[meta.arg]][track.id] = track;
+                });
             }
         );
 
         builder.addCase(getUserTopArtists.fulfilled,
-            (state, {payload}) => {
-                state.top.artists.push.apply(
-                    state.top.artists,
-                    payload.items
-                );
-            }
-        );
-
-        builder.addCase(getUserPlaylists.fulfilled,
-            (state, {payload}) => {
-                //filters only playlists own/created by the user; excludes followed playlists
-                //then appends to state as key: id and value: playlist pair
-                payload.items.filter(e => (e.owner.id === state.user.id) && !e.collaborative)
-                    .forEach(e => {
-                        e.tracks['items'] = [];        //adding items element to tracks
-                        state.playlists[e.id] = e;
-                    });
-            }
-        );
-
-        builder.addCase(getPlaylistTracks.fulfilled,
             (state, {meta, payload}) => {
-                state.playlists[meta.arg.playlistId].tracks.items.push.apply(
-                    state.playlists[meta.arg.playlistId].tracks.items,
-                    payload.items.filter(e => !e.track.is_local)     //remove local tracks
-                );
+                payload.items.forEach(artist => {
+                    state.top.artists[timeRangeEnum[meta.arg]][artist.id] = artist;
+                });
             }
         );
     }
