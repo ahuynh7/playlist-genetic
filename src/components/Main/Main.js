@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import { FormSelect } from "react-bootstrap";
+import { Button, ButtonGroup, ButtonToolbar, FormSelect } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import { useUserFetch, useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
@@ -17,6 +17,23 @@ const Main = () => {
         Object.fromEntries(new Map([...Array(100).keys()].map(e => [e, 0])))
     , []);
     const [map, setMap] = useState(initialMap);
+    const [feature, setFeature] = useState('popularity');       //default feature is popular
+
+    const features = [
+        'acousticness',
+        'danceability',
+        'energy',
+        'instrumentalness',
+        'key',
+        'liveness',
+        'loudness',
+        'mode',
+        'speechiness',
+        'tempo',
+        'time_signature',
+        'valence',
+        'popularity'
+    ];
 
     //function to map frequencies of an item's trait given an array
     //artists can only use popularity
@@ -25,23 +42,23 @@ const Main = () => {
 
         setMap(() => {
             for (let track in trackList) {
-                tempMap[trackList[track].popularity]++
+                tempMap[trackList[track][feature]]++
             }
 
             return tempMap;
         });
-    }, [initialMap]);
+    }, [initialMap, feature]);
     
+    //useEffect here handles playlist changes
     useEffect(() => {
         const timer = setTimeout(() => {
             if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
-            console.log(targetPlaylist)
-        }, 420);
+        }, 322);
 
         return () => clearTimeout(timer);
         
     }, [mapTrackList, targetPlaylist]);
-
+    
     return (
         <UserContext.Provider value={user}>
             <div>welcome {user.display_name}</div>
@@ -87,7 +104,17 @@ const Main = () => {
                     <Bar dataKey='freq' fill='#1db954'/>
                 </BarChart>
             </ResponsiveContainer>
-            
+            <ButtonToolbar>
+                <ButtonGroup size='sm'>
+                    {features.map((feature, i) => 
+                        <Button variant='outline-secondary' key={i}
+                            onClick={() => setFeature(feature)}
+                        >
+                            {feature}
+                        </Button>
+                    )}
+                </ButtonGroup>
+            </ButtonToolbar>
         </UserContext.Provider>
     );
 };
