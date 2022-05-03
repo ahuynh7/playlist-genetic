@@ -70,11 +70,7 @@ const Main = () => {
 
     //useEffect here handles playlist changes
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (targetPlaylist) mapTrackList(targetPlaylist.tracks.items);
-        }, 690);
-
-        return () => clearTimeout(timer);
+        if (targetPlaylist?.analysis) mapTrackList(targetPlaylist.tracks.items);
         
     }, [mapTrackList, targetPlaylist]);
     

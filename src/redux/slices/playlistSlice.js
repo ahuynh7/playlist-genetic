@@ -45,7 +45,7 @@ export const getPlaylistTracks = createAsyncThunk('playlists/{playlist_id}/track
             };
             let params = {
                 market: getState().user.user.country,       //specify market value to get accurate popularity index
-                fields: 'items(track(id,is_local,restrictions,name,popularity)),next,total',
+                fields: 'items(track(id,is_local,restrictions,name,popularity,type)),next,total',
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get('offset') : null
@@ -106,24 +106,14 @@ export const playlistSlice = createSlice({
     reducers: {
         completePlaylist: (state, {payload}) => {
             state.playlists[payload].complete = true;
+        },
+
+        analyzePlaylist: (state, {payload}) => {
+            state.playlists[payload].analysis = true;
         }
     },
 
     extraReducers: builder => {
-        builder.addCase(getPlaylistTracks.fulfilled,
-            (state, {meta, payload}) => {
-                //track is null if item is an episode from podcast
-                payload.items
-                    .filter(({track}) => track ?        //remove local tracks, episodes, and restricted tracks
-                        !(track.is_local || track.restrictions)
-                        :
-                        false)     
-                    .forEach(({track}) => {        //adding tracks in key: id and value: track pair
-                        state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
-                    })   
-            }
-        );
-
         builder.addCase(getUserPlaylists.fulfilled,
             (state, {meta, payload}) => {
                 //filters only playlists own/created by the user; excludes followed playlists
@@ -132,25 +122,42 @@ export const playlistSlice = createSlice({
                     .filter(e => (e.owner.id === meta.userId) && !e.collaborative)
                     .forEach(playlist => {
                         playlist['complete'] = null;        //boolean which monitors if all playlist tracks have been fetched
+                        playlist['analysis'] = null;        //boolean which monitors if all playlist tracks have an analysis
                         playlist.tracks['items'] = {};        //adding items element to tracks
                         state.playlists[playlist.id] = playlist;
                     });
             }
         );
 
+        builder.addCase(getPlaylistTracks.fulfilled,
+            (state, {meta, payload}) => {
+                //track is null if item is an episode from podcast
+                payload.items
+                    .filter(({track}) => track ?        //remove local tracks, episodes, and restricted tracks
+                        !(track.is_local || track.restrictions || (track.type === 'episode'))
+                        :
+                        false)     
+                    .forEach(({track}) => {        //adding tracks in key: id and value: track pair
+                        state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
+                    })   
+                
+            }
+        );
+
         builder.addCase(getTrackFeatures.fulfilled,
             (state, {meta, payload}) => {
                 //appends tracks with its audio features
-                payload.audio_features.forEach(feature => {
-                    Object.assign(
-                        state.playlists[meta.arg.playlistId].tracks.items[feature.id],
-                        feature
-                    );
-                });
+                payload.audio_features
+                    .forEach(feature => {
+                        Object.assign(
+                            state.playlists[meta.arg.playlistId].tracks.items[feature.id],
+                            feature
+                        );
+                    });
             }
         );
     }
 });
 
-export const {completePlaylist} = playlistSlice.actions;
+export const {analyzePlaylist, completePlaylist} = playlistSlice.actions;
 export default playlistSlice.reducer;

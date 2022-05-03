@@ -2,7 +2,7 @@ import { actionChannel, all, delay, fork, put, select, take, takeEvery } from 'r
 import { selectPlaylist } from '../../App';
 import { requestAccessToken } from '../slices/authorizationSlice';
 
-import { completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from '../slices/playlistSlice';
+import { analyzePlaylist, completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from '../slices/playlistSlice';
 import { getUser } from '../slices/userSlice';
 
 //make retry dynamic for getTrackFeatures?
@@ -21,8 +21,10 @@ function* handleGetTrackFeatures({payload}) {
     //splits trackList into 100 item chunks, which is the limit of api query
     for (let i = 0; i < trackList.length; i += 100) {
         yield put(getTrackFeatures({playlistId: payload, trackIds: trackList.slice(i, i + 100)}));
-        yield delay(690);
+        yield delay(420);
     }
+
+    yield put(analyzePlaylist(payload));
 }
 
 //recursive idea which helps paginate api calls.  pass in AsyncThunkAction
