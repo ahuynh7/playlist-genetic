@@ -2,6 +2,7 @@ import { createContext, useCallback, useRef, useState } from "react";
 import { useUserFetch } from "../../hooks/useUser";
 
 import Graph from "../Graph/Graph";
+import PlaylistPicker from "../PlaylistPicker/PlaylistPicker";
 import TopItemPicker from "../TopItemPicker/TopItemPicker";
 
 export const graphTypeEnum = {
@@ -21,7 +22,7 @@ const Main = () => {
     //artists can only use popularity
     const mapTrackList = useCallback(trackList => { 
         let tempMap = {};
-        
+
         for (let track in trackList) {
             let dataPoint = Number(trackList[track][feature].toFixed(2));
             
@@ -45,6 +46,7 @@ const Main = () => {
             <div>welcome {user.display_name}</div>
             <TopItemPicker />
             <p>playlists</p>
+            <PlaylistPicker />
             <Graph />
         </MainContext.Provider>
     );

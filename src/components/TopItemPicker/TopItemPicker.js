@@ -13,34 +13,34 @@ const TopItemPicker = () => {
         graphType.current = graphTypeEnum.topItems;
 
         setTopItem(itemList);
-        setFeature('popularity');
+        setFeature('popularity');       //top artists do not contain any other data besides a popularity index
     };
 
     //useEffect here handles topItem changes
     useEffect(() => {
         if (graphType.current === graphTypeEnum.topItems) mapTrackList(topItem);
-        
+
     }, [feature, graphType, mapTrackList, topItem]);
 
     return (
         <>
             <p>top tracks</p>
             <li>
-                {Object.keys(topTracks).map((e, i) => 
+                {Object.keys(topTracks).map((term, i) => 
                     <ul key={i}
-                        onClick={() => handleTopItemClick(topTracks[e])}
+                        onClick={() => handleTopItemClick(topTracks[term])}
                     >
-                        {e}
+                        {term}
                     </ul>
                 )}
             </li>
             <p>top artists</p>
             <li>
-                {Object.keys(topArtists).map((e, i) => 
+                {Object.keys(topArtists).map((term, i) => 
                     <ul key={i}
-                        onClick={() => handleTopItemClick(topArtists[e])}
+                        onClick={() => handleTopItemClick(topArtists[term])}
                     >
-                        {e}
+                        {term}
                     </ul>
                 )}
             </li>

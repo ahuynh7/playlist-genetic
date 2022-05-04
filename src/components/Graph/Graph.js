@@ -1,26 +1,24 @@
-import { useContext, useEffect } from "react";
-import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
-import { Button, ButtonGroup, ButtonToolbar, FormSelect } from "react-bootstrap";
+import { useContext } from "react";
+import { Button, ButtonGroup, ButtonToolbar } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
+
 import { graphTypeEnum, MainContext } from "../Main/Main";
 
+const features = {
+    popularity: ["obscure", "popular"],
+    acousticness: ["electronic", "acoustic"],
+    danceability: ["relaxed", "danceable"],
+    energy: ["lethargic", "energetic"],
+    instrumentalness: ["acapella", "instrumental"],
+    liveness: ["studio", "live"],
+    loudness: ["quite", "loud"],
+    speechiness: ["listening", "speechy"],
+    tempo: ["slow", "fast"],
+    valence: ["downbeat", "upbeat"]
+};
+
 const Graph = () => {
-    const {feature, graphType, map, mapTrackList, setFeature} = useContext(MainContext);
-    const {fetchPlaylistTracks, targetPlaylist} = usePlaylistTracksFetch();
-    const playlists = useUserPlaylistFetch();
-    
-    const features = [
-        "popularity",
-        "acousticness",
-        "danceability",
-        "energy",
-        "instrumentalness",
-        "liveness",
-        "loudness",
-        "speechiness",
-        "tempo",
-        "valence"
-    ];
+    const {feature, graphType, map, setFeature} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -38,27 +36,8 @@ const Graph = () => {
         }
     }
 
-    //useEffect here handles playlist changes
-    useEffect(() => {
-        if (targetPlaylist?.analysis && (graphType.current === graphTypeEnum.playlists)) mapTrackList(targetPlaylist.tracks.items);
-        
-    }, [graphType, mapTrackList, targetPlaylist]);
-
     return (
         <>
-            <FormSelect
-                onChange={event => {
-                    graphType.current = graphTypeEnum.playlists;
-                    fetchPlaylistTracks(event.target.value);
-                }}
-            >
-                <option>select</option>
-                {Object.keys(playlists).map((e, i) => 
-                    <option key={i} value={e}>
-                        {playlists[e].name}
-                    </option>
-                )}
-            </FormSelect>
             <ResponsiveContainer height={400}>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
                     margin={{top: 20, bottom: 30, left: 10, right: 5}}
@@ -67,8 +46,8 @@ const Graph = () => {
                         tick={feature === "tempo" || feature === "loudness"} type="number"
                         domain={configureDomain()}
                     >
-                        <Label position="insideBottomRight" offset={-5} value={`greater ${feature}`} />
-                        <Label position="insideBottomLeft" offset={-5} value={`lesser ${feature}`} />
+                        <Label position="insideBottomRight" offset={-5} value={features[feature][1]} />
+                        <Label position="insideBottomLeft" offset={-5} value={features[feature][0]} />
                     </XAxis>
                     <YAxis label={{value: "frequency", angle: -90, position: "insideLeft"}}/>
                     <Bar dataKey="freq" fill="#1db954"/>
@@ -76,7 +55,7 @@ const Graph = () => {
             </ResponsiveContainer>
             <ButtonToolbar>
                 <ButtonGroup size="sm">
-                    {features.map((feature, i) => 
+                    {Object.keys(features).map((feature, i) => 
                         <Button variant="outline-secondary" key={i}
                             disabled={graphType.current === graphTypeEnum.topItems}
                             onClick={() => setFeature(feature)}
