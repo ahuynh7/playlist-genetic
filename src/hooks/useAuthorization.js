@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAuthorization } from '../App';
-import { refreshAccessToken, requestAccessToken } from '../redux/slices/authorizationSlice';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuthorization } from "../App";
+import { refreshAccessToken, requestAccessToken } from "../redux/slices/authorizationSlice";
 
 export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
@@ -32,8 +32,8 @@ export const useAuthorization = () => {
 
 export const useRequestAuthorization = () => {
     const state = useSelector(selectAuthorization);
-    const queryString = require('query-string');
-    const AUTHORIZE = 'https://accounts.spotify.com/authorize?';
+    const queryString = require("query-string");
+    const AUTHORIZE = "https://accounts.spotify.com/authorize?";
     const [isAuthorized, setIsAuthorized] = useState(state.isAuthorized);
     const [isPendingAuthorization, setIsPendingAuthorization] = useState(state.isPendingAuthorization);
 
@@ -46,8 +46,8 @@ export const useRequestAuthorization = () => {
     }, [state.isPendingAuthorization]);
 
     const generateRandomString = length => {
-        var text = '';
-        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       
         for (var i = 0; i < length; i++) {
           text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -60,19 +60,19 @@ export const useRequestAuthorization = () => {
     const requestAuthorization = () => {
         let url = AUTHORIZE;
         let scope = [
-            'user-read-private',
-            'user-top-read',
-            'user-library-read',
-            'user-read-recently-played',
-            'user-read-currently-playing',
-            'user-follow-read',
-            'playlist-read-private'
+            "user-read-private",
+            "user-top-read",
+            "user-library-read",
+            "user-read-recently-played",
+            "user-read-currently-playing",
+            "user-follow-read",
+            "playlist-read-private"
         ];
         let query = queryString.stringify({
-            response_type: 'code',
+            response_type: "code",
             client_id: process.env.REACT_APP_CLIENT_ID,
-            redirect_uri: process.env.REACT_APP_REDIRECT_URI + 'login',
-            scope: scope.join(' '),
+            redirect_uri: process.env.REACT_APP_REDIRECT_URI + "login",
+            scope: scope.join(" "),
             state: generateRandomString(16),
             show_dialogue: true     //true: manual accept; for testing, false: automatic
         });

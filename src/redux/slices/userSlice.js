@@ -1,21 +1,21 @@
-import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from "axios";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const ME = 'https://api.spotify.com/v1/me';
+const ME = "https://api.spotify.com/v1/me";
 
 const timeRangeEnum = {
-    'short_term': 'shortTerm',
-    'medium_term': 'mediumTerm',
-    'long_term': 'longTerm'
+    "short_term": "shortTerm",
+    "medium_term": "mediumTerm",
+    "long_term": "longTerm"
 };
 
-export const getUser = createAsyncThunk('me',
+export const getUser = createAsyncThunk("me",
     async (_, {getState, rejectWithValue}) => {
         try {
             let url = ME;
             let headers = {
-                Authorization: 'Bearer ' + getState().authorization.accessToken,
-                'Content-Type': 'application/json'
+                Authorization: "Bearer " + getState().authorization.accessToken,
+                "Content-Type": "application/json"
             };
 
             return await axios
@@ -32,13 +32,13 @@ export const getUser = createAsyncThunk('me',
     }
 );
 
-export const getUserTopTracks = createAsyncThunk('top/tracks',
+export const getUserTopTracks = createAsyncThunk("top/tracks",
     async (timeRange, {getState, rejectWithValue}) => {
         try {
-            let url = ME + '/top/tracks';
+            let url = ME + "/top/tracks";
             let headers = {
-                Authorization: 'Bearer ' + getState().authorization.accessToken,
-                'Content-Type': 'application/json'
+                Authorization: "Bearer " + getState().authorization.accessToken,
+                "Content-Type": "application/json"
             };
             let params = {
                 limit: 50,
@@ -59,13 +59,13 @@ export const getUserTopTracks = createAsyncThunk('top/tracks',
     }
 );
 
-export const getUserTopArtists = createAsyncThunk('top/artists',
+export const getUserTopArtists = createAsyncThunk("top/artists",
     async (timeRange, {getState, rejectWithValue}) => {
         try {
-            let url = ME + '/top/artists';
+            let url = ME + "/top/artists";
             let headers = {
-                Authorization: 'Bearer ' + getState().authorization.accessToken,
-                'Content-Type': 'application/json'
+                Authorization: "Bearer " + getState().authorization.accessToken,
+                "Content-Type": "application/json"
             };
             let params = {
                 limit: 50,
@@ -87,7 +87,7 @@ export const getUserTopArtists = createAsyncThunk('top/artists',
 );
 
 export const userSlice = createSlice({
-    name: 'user',
+    name: "user",
 
     //data stored in states as dictionaries to be easily accessed
     initialState: {

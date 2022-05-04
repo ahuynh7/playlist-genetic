@@ -1,16 +1,16 @@
-import { actionChannel, all, delay, fork, put, select, take, takeEvery } from 'redux-saga/effects';
-import { selectPlaylist } from '../../App';
-import { requestAccessToken } from '../slices/authorizationSlice';
+import { actionChannel, all, delay, fork, put, select, take, takeEvery } from "redux-saga/effects";
+import { selectPlaylist } from "../../App";
+import { requestAccessToken } from "../slices/authorizationSlice";
 
-import { completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from '../slices/playlistSlice';
-import { getUser } from '../slices/userSlice';
+import { analyzePlaylist, completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from "../slices/playlistSlice";
+import { getUser } from "../slices/userSlice";
 
 //make retry dynamic for getTrackFeatures?
 //handles retry given a 429 error
 function* retryGetPlaylistTracks({meta, payload}) {
     if (payload.error.status !== 429) return;
 
-    yield delay(parseInt(payload['retry-after']) * 1000);        //api returns "retry-after" in seconds
+    yield delay(parseInt(payload["retry-after"]) * 1000);        //api returns "retry-after" in seconds
     yield put(getPlaylistTracks(meta.arg));
 }
 
@@ -21,8 +21,10 @@ function* handleGetTrackFeatures({payload}) {
     //splits trackList into 100 item chunks, which is the limit of api query
     for (let i = 0; i < trackList.length; i += 100) {
         yield put(getTrackFeatures({playlistId: payload, trackIds: trackList.slice(i, i + 100)}));
-        yield delay(690);
+        yield delay(420);
     }
+
+    yield put(analyzePlaylist(payload));        //confirms that playlist has all features fetched
 }
 
 //recursive idea which helps paginate api calls.  pass in AsyncThunkAction
@@ -37,7 +39,7 @@ function* paginate({meta, payload, thunk, type}) {
     if (!next) return;
 
     //accounts for some thunk arguments which may accept single values or an object
-    yield put(thunk(typeof meta.arg === 'string' ? next : {...meta.arg, next}));
+    yield put(thunk(typeof meta.arg === "string" ? next : {...meta.arg, next}));
 }
 
 //throttle concept: leaky-bucket, except the bucket has no limit
@@ -70,10 +72,10 @@ function* playlistSaga() {
     yield take(getUser.fulfilled);      //ensures user data is fetched first
     yield put(getUserPlaylists());
 
-    //handle fetching tracks' features given getPlaylistTracks payload
+    //handle fetching tracks" features given getPlaylistTracks payload
     yield takeEvery(completePlaylist.type, handleGetTrackFeatures);
 
-    //every rejection, send to be retried.  hopefully this shouldn't execute
+    //every rejection, send to be retried.  hopefully this shouldn"t execute
     yield takeEvery(getPlaylistTracks.rejected, retryGetPlaylistTracks);        
     
 }
