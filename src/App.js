@@ -1,15 +1,15 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { createContext } from 'react';
-import { createSelector } from '@reduxjs/toolkit';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createContext } from "react";
+import { createSelector } from "@reduxjs/toolkit";
 
 import {
     useAuthorization,
     useRequestAuthorization
-} from './hooks/useAuthorization';
+} from "./hooks/useAuthorization";
 
-import Home from './components/Home';
-import NotFound from './components/NotFound';
-import Main from './components/Main';
+import Home from "./components/Home";
+import NotFound from "./components/NotFound";
+import Main from "./components/Main";
 
 export const AuthorizationContext = createContext();
 export const selectAuthorization = createSelector(state => state.authorization, i => i);
@@ -35,11 +35,11 @@ const App = () => {
         <AuthorizationContext.Provider value={contextPackage}>
             <BrowserRouter>
                 <Routes>
-                    <Route path='/' element={<Home />} >
-                        <Route path='login' element={null} />
-                        <Route path='main' element={<Main />} />
+                    <Route path="/" element={<Home />} >
+                        <Route path="login" element={null} />
+                        <Route path="main" element={<Main />} />
                     </Route>
-                    <Route path='*' element={<NotFound />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
         </AuthorizationContext.Provider>    

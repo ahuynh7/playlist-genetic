@@ -12,8 +12,8 @@ const Home = () => {
     
     //prevents accessing /main route without proper authorization first
     useEffect(() => {
-        if (pathname === '/main' && !isPendingAuthorization && !isAuthorized) {
-            navigate('/');
+        if (pathname === "/main" && !isPendingAuthorization && !isAuthorized) {
+            navigate("/");
         }
         
     }, [isAuthorized, isPendingAuthorization, navigate, pathname]);

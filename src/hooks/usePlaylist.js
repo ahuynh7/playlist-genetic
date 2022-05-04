@@ -8,7 +8,14 @@ export const useUserPlaylistFetch = () => {
     const state = useSelector(selectPlaylist);
     const [playlists, setPlaylists] = useState(state.playlists);
 
-    useEffect(() => setPlaylists(state.playlists), [state.playlists]);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setPlaylists(state.playlists);
+        }, 222);
+        
+        return () => clearTimeout(timer);
+    
+    }, [state.playlists]);
 
     return playlists;
 };
@@ -17,7 +24,7 @@ export const usePlaylistTracksFetch = () => {
     const {accessToken} = useContext(AuthorizationContext);
     const state = useSelector(selectPlaylist);
     const [targetPlaylist, setTargetPlaylist] = useState();
-    const id = useRef('');
+    const id = useRef("");
     const dispatch = useDispatch();
 
     //form of lazy loading a playlist
@@ -25,7 +32,8 @@ export const usePlaylistTracksFetch = () => {
         let playlist = state.playlists[playlistId];
         id.current = playlistId;
         
-        if (Object.keys(playlist.tracks.items).length !== 0) {
+        //do not dispatch new request if playlist is complete
+        if (playlist.complete || playlist.analysis) {
             setTargetPlaylist(playlist);
 
             return;
