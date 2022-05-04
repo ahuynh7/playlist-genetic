@@ -20,10 +20,11 @@ const PlaylistPicker = () => {
         <FormSelect
             onChange={event => {
                 graphType.current = graphTypeEnum.playlists;
+
                 fetchPlaylistTracks(event.target.value);
             }}
         >
-            <option>select</option>
+            <option disabled>select</option>
             {Object.keys(playlists).map((e, i) => 
                 <option key={i} value={e}>
                     {playlists[e].name}

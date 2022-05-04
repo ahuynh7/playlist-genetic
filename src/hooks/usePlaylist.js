@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AuthorizationContext, selectPlaylist } from "../App";
+import { MainContext } from "../components/Main/Main";
 import { getPlaylistTracks } from "../redux/slices/playlistSlice";
 
 export const useUserPlaylistFetch = () => {
@@ -22,6 +23,7 @@ export const useUserPlaylistFetch = () => {
 
 export const usePlaylistTracksFetch = () => {
     const {accessToken} = useContext(AuthorizationContext);
+    const {setIsLoading} = useContext(MainContext);
     const state = useSelector(selectPlaylist);
     const [targetPlaylist, setTargetPlaylist] = useState();
     const id = useRef("");
@@ -39,6 +41,7 @@ export const usePlaylistTracksFetch = () => {
             return;
         };
 
+        setIsLoading(true);     //bypass loading if playlist exists in store
         dispatch(getPlaylistTracks({accessToken, playlistId}));
     };
 

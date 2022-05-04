@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button, ButtonGroup, ButtonToolbar } from "react-bootstrap";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label, CartesianGrid } from "recharts";
 
 import { graphTypeEnum, MainContext } from "../Main/Main";
 
@@ -18,7 +18,7 @@ const features = {
 };
 
 const Graph = () => {
-    const {feature, graphType, map, setFeature} = useContext(MainContext);
+    const {feature, isLoading, graphType, map, setFeature} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -36,14 +36,20 @@ const Graph = () => {
         }
     }
 
+    useEffect(() => {
+        console.log(isLoading);
+    }, [isLoading]);
+
     return (
         <>
             <ResponsiveContainer height={400}>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
                     margin={{top: 20, bottom: 30, left: 10, right: 5}}
                 >
+                    <CartesianGrid strokeDasharray="4 1" />
                     <XAxis dataKey="value" allowDataOverflow
-                        tick={feature === "tempo" || feature === "loudness"} type="number"
+                        tick={feature === "tempo" || feature === "loudness"}
+                        type="number"
                         domain={configureDomain()}
                     >
                         <Label position="insideBottomRight" offset={-5} value={features[feature][1]} />

@@ -14,6 +14,7 @@ export const MainContext = createContext();
 
 const Main = () => {
     const user = useUserFetch();
+    const [isLoading, setIsLoading] = useState(false);
     const [feature, setFeature] = useState("popularity");       //default feature is popular
     const [map, setMap] = useState({});
     const graphType = useRef(null);
@@ -38,11 +39,16 @@ const Main = () => {
         }
         
         setMap(tempMap);
+        setIsLoading(false);
 
     }, [feature]);
 
+    const contextPackage = {
+        feature, graphType, isLoading, map, mapTrackList, setIsLoading, setFeature
+    };
+
     return (
-        <MainContext.Provider value={{feature, graphType, map, mapTrackList, setFeature}}>
+        <MainContext.Provider value={contextPackage}>
             <div>welcome {user.display_name}</div>
             <TopItemPicker />
             <p>playlists</p>
