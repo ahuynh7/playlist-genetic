@@ -40,7 +40,7 @@ export const usePlaylistTracksFetch = () => {
 
             return;
         };
-
+        console.log(state.playlists)
         setIsLoading(true);     //bypass loading if playlist exists in store
         dispatch(getPlaylistTracks({accessToken, playlistId}));
     };

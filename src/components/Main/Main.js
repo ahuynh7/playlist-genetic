@@ -1,9 +1,8 @@
 import { createContext, useCallback, useRef, useState } from "react";
-import { useUserFetch } from "../../hooks/useUser";
 
 import Graph from "../Graph/Graph";
-import PlaylistPicker from "../PlaylistPicker/PlaylistPicker";
-import TopItemPicker from "../TopItemPicker/TopItemPicker";
+import PlaylistPicker from "../PlaylistPicker";
+import TopItemPicker from "../TopItemPicker";
 
 export const graphTypeEnum = {
     topItems: "topItems",
@@ -13,7 +12,6 @@ export const graphTypeEnum = {
 export const MainContext = createContext();
 
 const Main = () => {
-    const user = useUserFetch();
     const [isLoading, setIsLoading] = useState(false);
     const [feature, setFeature] = useState("popularity");       //default feature is popular
     const [map, setMap] = useState({});
@@ -49,7 +47,6 @@ const Main = () => {
 
     return (
         <MainContext.Provider value={contextPackage}>
-            <div>welcome {user.display_name}</div>
             <TopItemPicker />
             <p>playlists</p>
             <PlaylistPicker />
