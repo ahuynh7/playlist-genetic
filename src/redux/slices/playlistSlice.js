@@ -148,6 +148,7 @@ export const playlistSlice = createSlice({
             (state, {meta, payload}) => {
                 //appends tracks with its audio features
                 payload.audio_features
+                    .filter(feature => feature)     //spotify 404 errors
                     .forEach(feature => {
                         Object.assign(
                             state.playlists[meta.arg.playlistId].tracks.items[feature.id],

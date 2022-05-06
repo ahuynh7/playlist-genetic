@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthorizationContext } from "../../App";
 
+import { AuthorizationContext } from "../../App";
 import { useAccessTokenFetch } from "../../hooks/useAuthorization";
 
 const Login = () => {
