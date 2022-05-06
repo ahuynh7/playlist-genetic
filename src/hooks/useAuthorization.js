@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { stringify } from "query-string";
+
 import { selectAuthorization } from "../App";
 import { refreshAccessToken, requestAccessToken } from "../redux/slices/authorizationSlice";
 
@@ -32,7 +34,6 @@ export const useAuthorization = () => {
 
 export const useRequestAuthorization = () => {
     const state = useSelector(selectAuthorization);
-    const queryString = require("query-string");
     const AUTHORIZE = "https://accounts.spotify.com/authorize?";
     const [isAuthorized, setIsAuthorized] = useState(state.isAuthorized);
     const [isPendingAuthorization, setIsPendingAuthorization] = useState(state.isPendingAuthorization);
@@ -68,7 +69,7 @@ export const useRequestAuthorization = () => {
             "user-follow-read",
             "playlist-read-private"
         ];
-        let query = queryString.stringify({
+        let query = stringify({
             response_type: "code",
             client_id: process.env.REACT_APP_CLIENT_ID,
             redirect_uri: process.env.REACT_APP_REDIRECT_URI + "login",

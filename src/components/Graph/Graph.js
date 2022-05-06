@@ -42,7 +42,7 @@ const Graph = () => {
 
     return (
         <>
-            <ResponsiveContainer height={400}>
+            <ResponsiveContainer width="69%" height={400}>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
                     margin={{top: 20, bottom: 30, left: 10, right: 5}}
                 >
