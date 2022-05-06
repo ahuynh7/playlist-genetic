@@ -23,16 +23,17 @@ const Main = () => {
         let tempMap = {};
 
         for (let track in trackList) {
-            let dataPoint = Number(trackList[track][feature].toFixed(2));
+            //handles error where features did not load into a track, for some reason
+            let featureValue = Number(trackList[track][feature] ? trackList[track][feature].toFixed(2) : 0);
             
             //remove decimals if feature are these types.  causes data bars to be miniscule
-            if (feature === "tempo" || feature === "loudness") dataPoint = Math.round(dataPoint);
+            if (feature === "tempo" || feature === "loudness") featureValue = Math.round(featureValue);
 
-            if (tempMap[dataPoint]) {
-                tempMap[dataPoint]++;
+            if (tempMap[featureValue]) {
+                tempMap[featureValue]++;
             }
             else {
-                tempMap[dataPoint] = 1;
+                tempMap[featureValue] = 1;
             }
         }
         

@@ -1,10 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 
-const documentWidth = document.documentElement.clientWidth;
-const windowWidth = window.innerWidth;
-const scrollBarWidth = windowWidth - documentWidth;
-console.log(scrollBarWidth)
-
 export const GlobalStyle = createGlobalStyle`
     :root {
         --maxWidth: 1280px; 
@@ -24,7 +19,6 @@ export const GlobalStyle = createGlobalStyle`
 
     body {  
         margin: 0;
-        padding-right: ${scrollBarWidth}px;
         box-sizing: border-box;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
