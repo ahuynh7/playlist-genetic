@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import createSagaMiddleware from '@redux-saga/core';
+import { configureStore } from "@reduxjs/toolkit";
+import createSagaMiddleware from "@redux-saga/core";
 
-import authorizationReducer from './slices/authorizationSlice';
-import playlistReducer from './slices/playlistSlice';
-import userReducer from './slices/userSlice';
-import rootSaga from './rootSaga';
+import authorizationReducer from "./slices/authorizationSlice";
+import playlistReducer from "./slices/playlistSlice";
+import userReducer from "./slices/userSlice";
+import rootSaga from "./rootSaga";
 
 //saga middleware to listen to certain dispatches and throttle api calls
 const sagaMiddleware = createSagaMiddleware();

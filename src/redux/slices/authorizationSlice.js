@@ -1,22 +1,22 @@
-import axios from 'axios';
-import { Buffer } from 'buffer';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from "axios";
+import { Buffer } from "buffer";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const TOKEN = 'https://accounts.spotify.com/api/token';
-const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ':' + process.env.REACT_APP_CLIENT_SECRET).toString('base64');
+const TOKEN = "https://accounts.spotify.com/api/token";
+const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ":" + process.env.REACT_APP_CLIENT_SECRET).toString("base64");
 
-export const requestAccessToken = createAsyncThunk('callback',
+export const requestAccessToken = createAsyncThunk("callback",
     async (code, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
-                Authorization: 'Basic ' + ENCODED_ID,
-                'Content-Type': 'application/x-www-form-urlencoded'
+                Authorization: "Basic " + ENCODED_ID,
+                "Content-Type": "application/x-www-form-urlencoded"
             };
             let params = {
-                grant_type: 'authorization_code',
+                grant_type: "authorization_code",
                 code: code,
-                redirect_uri: process.env.REACT_APP_REDIRECT_URI + 'login'
+                redirect_uri: process.env.REACT_APP_REDIRECT_URI + "login"
             };
 
             return await axios
@@ -29,16 +29,16 @@ export const requestAccessToken = createAsyncThunk('callback',
     }
 );
 
-export const refreshAccessToken = createAsyncThunk('refresh',
+export const refreshAccessToken = createAsyncThunk("refresh",
     async (refreshToken, {rejectWithValue}) => {
         try {
             let url = TOKEN;
             let headers = {
-                Authorization: 'Basic ' + ENCODED_ID,
-                'Content-Type': 'application/x-www-form-urlencoded'
+                Authorization: "Basic " + ENCODED_ID,
+                "Content-Type": "application/x-www-form-urlencoded"
             };
             let params = {
-                grant_type: 'refresh_token',
+                grant_type: "refresh_token",
                 refresh_token: refreshToken
             };
 
@@ -53,7 +53,7 @@ export const refreshAccessToken = createAsyncThunk('refresh',
 );
 
 export const authorizationSlice = createSlice({
-    name: 'authorization',
+    name: "authorization",
     
     initialState: {
         initialAccessToken: null,
