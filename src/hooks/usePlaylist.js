@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AuthorizationContext, selectPlaylist } from "../App";
@@ -25,29 +25,18 @@ export const usePlaylistTracksFetch = () => {
     const {accessToken} = useContext(AuthorizationContext);
     const {setIsLoading} = useContext(MainContext);
     const state = useSelector(selectPlaylist);
-    const [targetPlaylist, setTargetPlaylist] = useState();
-    const id = useRef("");
     const dispatch = useDispatch();
 
-    //form of lazy loading a playlist
-    const fetchPlaylistTracks = playlistId => {
+    //form of lazy loading a playlist.  return playlist given id
+    const playlistTrackFetch = playlistId => {
         let playlist = state.playlists[playlistId];
-        id.current = playlistId;
         
         //do not dispatch new request if playlist is complete
-        if (playlist.complete || playlist.analysis) {
-            setTargetPlaylist(playlist);
-
-            return;
-        };
-        console.log(state.playlists)
+        if (playlist.complete || playlist.analysis) return playlist;
+        
         setIsLoading(true);     //bypass loading if playlist exists in store
         dispatch(getPlaylistTracks({accessToken, playlistId}));
     };
 
-    useEffect(() => 
-        setTargetPlaylist(state.playlists[id.current])
-    , [state.playlists]);
-
-    return {fetchPlaylistTracks, targetPlaylist};
+    return playlistTrackFetch;
 };
