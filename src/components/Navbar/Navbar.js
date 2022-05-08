@@ -24,7 +24,7 @@ const Navbar = () => {
                     />
                     <CustomNavbar.Text>
                         {/* handle logout */}
-                        <Link to="">Logout</Link>
+                        <Link to="" onClick={() => window.location.reload()}>Logout</Link>
                     </CustomNavbar.Text>
                 </NavbarLinks>
                 :
