@@ -50,7 +50,8 @@ export const getUserTopTracks = createAsyncThunk("top/tracks",
                 .then(({data}) => data);
         }
         catch (error) {
-            return rejectWithValue(error.response.data);
+            console.log(error.toJSON())
+            return rejectWithValue(error.response.status);
         }
     },
     {
@@ -77,7 +78,7 @@ export const getUserTopArtists = createAsyncThunk("top/artists",
                 .then(({data}) => data);
         }
         catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response.status);
         }
     },
     {

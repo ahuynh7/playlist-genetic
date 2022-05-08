@@ -4,7 +4,7 @@ import { getUser, getUserTopArtists, getUserTopTracks } from "../slices/userSlic
 import { requestAccessToken } from "../slices/authorizationSlice";
 
 function* retryGetUserTop(thunk, {meta, payload}) {
-    if (payload.error.status !== 503) return;
+    if (payload !== 503) return;
 
     yield delay(2000);      //custom retry time
     yield put(thunk(meta.arg));

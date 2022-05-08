@@ -19,3 +19,9 @@ export const PlaylistImage = styled.img`
     position: relative;
     overflow: hidden;
 `;
+
+export const PlaylistTitle = styled.p`
+    margin: 5px 0;
+    font-size: 15px;
+    line-height: 1;
+`;

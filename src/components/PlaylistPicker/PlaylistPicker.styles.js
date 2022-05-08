@@ -2,5 +2,5 @@ import styled from "styled-components";
 
 export const MenuContainer = styled.div`
     margin: auto;
-    width: 69%;
+    width: 88%;
 `;

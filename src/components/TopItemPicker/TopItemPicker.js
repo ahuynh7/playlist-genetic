@@ -1,7 +1,15 @@
 import { useContext, useEffect, useState } from "react";
+import { ListGroupItem } from "react-bootstrap";
 
 import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 import { graphTypeEnum, MainContext } from "../Main/Main";
+import { ListGroup } from "./TopItemPicker.styles";
+
+const timeRangeTrans = {
+    "shortTerm": "4 Weeks",
+    "mediumTerm": "6 Months",
+    "longTerm": "All Time"
+};
 
 const TopItemPicker = () => {
     const {feature, graphType, mapTrackList, setFeature} = useContext(MainContext);
@@ -9,7 +17,7 @@ const TopItemPicker = () => {
     const topArtists = useUserTopArtistFetch();
     const [topItem, setTopItem] = useState({});
 
-    const handleTopItemClick = itemList => {
+    const handleTopItemClick = itemList => () => {
         graphType.current = graphTypeEnum.topItems;
 
         setTopItem(itemList);
@@ -25,25 +33,25 @@ const TopItemPicker = () => {
     return (
         <>
             <p>top tracks</p>
-            <li>
+            <ListGroup horizontal>
                 {Object.keys(topTracks).map((term, i) => 
-                    <ul key={i}
-                        onClick={() => handleTopItemClick(topTracks[term])}
+                    <ListGroupItem key={i} action
+                        onClick={handleTopItemClick(topTracks[term])}
                     >
-                        {term}
-                    </ul>
+                        {timeRangeTrans[term]}
+                    </ListGroupItem>
                 )}
-            </li>
+            </ListGroup>
             <p>top artists</p>
-            <li>
+            <ListGroup horizontal>
                 {Object.keys(topArtists).map((term, i) => 
-                    <ul key={i}
-                        onClick={() => handleTopItemClick(topArtists[term])}
+                    <ListGroupItem key={i} action
+                        onClick={handleTopItemClick(topArtists[term])}
                     >
-                        {term}
-                    </ul>
+                        {timeRangeTrans[term]}
+                    </ListGroupItem>
                 )}
-            </li>
+            </ListGroup>
         </>
     );
 };
