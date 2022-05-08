@@ -3,11 +3,12 @@ import styled from "styled-components";
 
 export const NavbarBrand = styled(CustomNavbarBrand)`
     margin-left: 20px;
-    font-size: 25px;
+    font-size: var(--fontBig);
 `;
 
 export const NavbarLinks = styled.span`
     margin-right: 20px;
+    font-size: var(--fontSmall);
 `;
 
 export const ProfilePicture = styled.img`
@@ -18,4 +19,5 @@ export const ProfilePicture = styled.img`
     position: relative;
     overflow: hidden;
     border-radius: 50%;
+    cursor: pointer;
 `;

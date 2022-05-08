@@ -9,7 +9,7 @@ import { usePreventBodyScroll } from "../../hooks/usePreventBodyScroll";
 
 
 const PlaylistPicker = () => {
-    const {graphType, mapTrackList} = useContext(MainContext);
+    const {graphType, map, mapTrackList} = useContext(MainContext);
     const {disableScroll, enableScroll} = usePreventBodyScroll();
     const playlistTrackFetch = usePlaylistTracksFetch();
     const playlists = useUserPlaylistFetch();
@@ -29,6 +29,12 @@ const PlaylistPicker = () => {
         
     }, [graphType, mapTrackList, playlists, selected]);
 
+    //resets selected playlist if user selects top item
+    useEffect(() => {
+        if (graphType.current === graphTypeEnum.topItems) setSelected("");
+
+    }, [graphType, map]);
+
     return (
         <MenuContainer onMouseEnter={disableScroll} onMouseLeave={enableScroll}>
             <ScrollMenu
@@ -46,6 +52,7 @@ const PlaylistPicker = () => {
                         itemId={playlist.id}
                         key={playlist.id}
                         playlist={playlist}
+                        selected={playlist.id === selected}
                         onClick={handleCardClick(playlist.id)}
                     /> 
                 )}

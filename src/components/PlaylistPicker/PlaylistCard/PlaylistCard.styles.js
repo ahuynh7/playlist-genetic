@@ -6,9 +6,10 @@ export const Card = styled(CustomCard)`
     height: 100%;
     margin: 0 10px;
     padding: 5px;
-    border: hidden;
+    border: ${({selected}) => selected ? "1px solid" : "hidden"};
     border-radius: 10px;
-    background-color: var(--lightGrey)
+    background-color: var(--lightGrey);
+    cursor: pointer;
 `;
 
 export const PlaylistImage = styled.img`

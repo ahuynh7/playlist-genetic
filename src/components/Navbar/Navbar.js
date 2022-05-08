@@ -19,11 +19,13 @@ const Navbar = () => {
             <NavbarBrand>Playlist Genetic</NavbarBrand>
             {hasUserLoaded() ?
                 <NavbarLinks>
-                    <CustomNavbar.Text>Welcome, {user.display_name}</CustomNavbar.Text>
                     <ProfilePicture src={user.images[0].url}
                         onClick={() => window.open(user.external_urls.spotify)}
                     />
-                    <CustomNavbar.Text>Logout</CustomNavbar.Text>
+                    <CustomNavbar.Text>
+                        {/* handle logout */}
+                        <Link to="">Logout</Link>
+                    </CustomNavbar.Text>
                 </NavbarLinks>
                 :
                 <NavbarLinks>

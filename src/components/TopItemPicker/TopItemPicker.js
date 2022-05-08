@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { ListGroupItem } from "react-bootstrap";
 
 import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
 import { graphTypeEnum, MainContext } from "../Main/Main";
-import { ListGroup } from "./TopItemPicker.styles";
+import { ItemsLabel, ListGroup, ListGroupItem } from "./TopItemPicker.styles";
 
 const timeRangeTrans = {
     "shortTerm": "4 Weeks",
@@ -12,7 +11,7 @@ const timeRangeTrans = {
 };
 
 const TopItemPicker = () => {
-    const {feature, graphType, mapTrackList, setFeature} = useContext(MainContext);
+    const {feature, graphType, map, mapTrackList, setFeature} = useContext(MainContext);
     const topTracks = useUserTopTrackFetch();
     const topArtists = useUserTopArtistFetch();
     const [topItem, setTopItem] = useState({});
@@ -30,9 +29,15 @@ const TopItemPicker = () => {
 
     }, [feature, graphType, mapTrackList, topItem]);
 
+    //resets topItems if user selects a playlist
+    useEffect(() => {
+        if (graphType.current === graphTypeEnum.playlists) setTopItem({});
+        
+    }, [graphType, map]);
+
     return (
         <>
-            <p>top tracks</p>
+            <ItemsLabel>Top Tracks</ItemsLabel>
             <ListGroup horizontal>
                 {Object.keys(topTracks).map((term, i) => 
                     <ListGroupItem key={i} action
@@ -42,7 +47,7 @@ const TopItemPicker = () => {
                     </ListGroupItem>
                 )}
             </ListGroup>
-            <p>top artists</p>
+            <ItemsLabel>Top Artists</ItemsLabel>
             <ListGroup horizontal>
                 {Object.keys(topArtists).map((term, i) => 
                     <ListGroupItem key={i} action

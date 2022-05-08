@@ -1,8 +1,9 @@
 import { createContext, useCallback, useRef, useState } from "react";
 
-import Graph from "../Graph/Graph";
+import Graph from "../Graph";
 import PlaylistPicker from "../PlaylistPicker";
 import TopItemPicker from "../TopItemPicker";
+import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
 
 export const graphTypeEnum = {
     topItems: "topItems",
@@ -49,7 +50,7 @@ const Main = () => {
     return (
         <MainContext.Provider value={contextPackage}>
             <TopItemPicker />
-            <p>playlists</p>
+            <ItemsLabel>Playlists</ItemsLabel>
             <PlaylistPicker />
             <Graph />
         </MainContext.Provider>

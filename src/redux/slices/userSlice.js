@@ -50,7 +50,6 @@ export const getUserTopTracks = createAsyncThunk("top/tracks",
                 .then(({data}) => data);
         }
         catch (error) {
-            console.log(error.toJSON())
             return rejectWithValue(error.response.status);
         }
     },

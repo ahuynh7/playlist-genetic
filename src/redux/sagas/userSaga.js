@@ -3,10 +3,12 @@ import { delay, put, take, takeEvery } from "redux-saga/effects";
 import { getUser, getUserTopArtists, getUserTopTracks } from "../slices/userSlice";
 import { requestAccessToken } from "../slices/authorizationSlice";
 
-function* retryGetUserTop(thunk, {meta, payload}) {
-    if (payload !== 503) return;
 
-    yield delay(2000);      //custom retry time
+
+function* retryGetUserTop(thunk, {meta, payload}) {
+    if (payload !== 503 && payload !== null) return;        //handle timeouts?
+
+    yield delay(2000);      //custom retry time of 2 seconds
     yield put(thunk(meta.arg));
 }
 

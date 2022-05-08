@@ -3,10 +3,10 @@
 
 import { Card, PlaylistImage, PlaylistTitle } from "./PlaylistCard.styles";
 
-const PlaylistCard = ({playlist, onClick}) => {
+const PlaylistCard = ({playlist, onClick, selected}) => {
 
     return (
-        <Card onClick={onClick}>
+        <Card selected={selected} onClick={onClick}>
             <PlaylistImage src={playlist.images[0].url} />
             <PlaylistTitle>{playlist.name}</PlaylistTitle>
         </Card>

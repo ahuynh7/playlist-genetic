@@ -1,10 +1,12 @@
 import { useContext, useEffect } from "react";
 import { Button, ButtonGroup, ButtonToolbar } from "react-bootstrap";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Label, CartesianGrid } from "recharts";
+import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
 
 import { graphTypeEnum, MainContext } from "../Main/Main";
+import { GraphWrapper } from "./Graph.styles";
+import GradientLegend from "./GradientLegend";
 
-const features = {
+export const featureAdjectives = {
     popularity: ["obscure", "popular"],
     acousticness: ["electronic", "acoustic"],
     danceability: ["relaxed", "danceable"],
@@ -40,37 +42,40 @@ const Graph = () => {
         console.log(isLoading);
     }, [isLoading]);
 
-    return (
-        <>
-            <ResponsiveContainer width="69%" height={400}>
+    return ( <>
+        <GraphWrapper>
+            <ResponsiveContainer>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
-                    margin={{top: 20, bottom: 30, left: 10, right: 5}}
+                    margin={{bottom: 20}}
                 >
-                    <CartesianGrid strokeDasharray="4 1" />
+                   
                     <XAxis dataKey="value" allowDataOverflow
                         tick={feature === "tempo" || feature === "loudness"}
+                        tickSize={5}
                         type="number"
                         domain={configureDomain()}
-                    >
-                        <Label position="insideBottomRight" offset={-5} value={features[feature][1]} />
-                        <Label position="insideBottomLeft" offset={-5} value={features[feature][0]} />
-                    </XAxis>
-                    <YAxis label={{value: "frequency", angle: -90, position: "insideLeft"}}/>
+                        padding={{left: 5}}
+                    />
+                    <YAxis axisLine={false} tickLine={false}>
+                        <Label position="left" value="frequency" angle={-90} offset={-10} />
+                    </YAxis>
+                    <Legend content={<GradientLegend feature={feature} />} />
                     <Bar dataKey="freq" fill="#1db954"/>
                 </BarChart>
             </ResponsiveContainer>
-            <ButtonToolbar>
-                <ButtonGroup size="sm">
-                    {Object.keys(features).map((feature, i) => 
-                        <Button variant="outline-secondary" key={i}
-                            disabled={graphType.current === graphTypeEnum.topItems}
-                            onClick={() => setFeature(feature)}
-                        >
-                            {feature}
-                        </Button>
-                    )}
-                </ButtonGroup>
-            </ButtonToolbar>
+        </GraphWrapper>
+        <ButtonToolbar>
+            <ButtonGroup size="sm">
+                {Object.keys(featureAdjectives).map((feature, i) => 
+                    <Button variant="outline-secondary" key={i}
+                        disabled={graphType.current === graphTypeEnum.topItems}
+                        onClick={() => setFeature(feature)}
+                    >
+                        {feature}
+                    </Button>
+                )}
+            </ButtonGroup>
+        </ButtonToolbar>
         </>
     );
 };
