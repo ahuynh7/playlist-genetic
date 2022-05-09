@@ -1,4 +1,3 @@
-import { Card as CustomCard } from "react-bootstrap";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import styled from "styled-components";
 
@@ -14,7 +13,7 @@ export const LoadingOverlay = styled(LoadingOverlayWrapper)`
     background-color: var(--lightGrey);
     cursor: pointer;
 
-    ._loading_overlay_overlay {
+    .card_overlay {
         border-radius: ${cardBorderRadius - 2}px;
     }
 `;

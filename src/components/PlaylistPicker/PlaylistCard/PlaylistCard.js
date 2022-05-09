@@ -1,20 +1,21 @@
-import { useContext } from "react";
-// import { VisibilityContext } from "react-horizontal-scrolling-menu";
+import { useContext, useRef } from "react";
 
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { MainContext } from "../../Main/Main";
 import { LoadingOverlay, PlaylistImage, PlaylistTitle } from "./PlaylistCard.styles";
 
 const PlaylistCard = ({playlist, onClick, selected}) => {
     const {isLoading} = useContext(MainContext);
 
+
     return (
-        <LoadingOverlay active={isLoading && selected} selected={selected && !isLoading}>
-            <div onClick={onClick}>
-                <PlaylistImage src={playlist.images[0].url} />
+        <LoadingOverlay
+            classNamePrefix="card_"
+            spinner
+            active={isLoading && selected}
+            selected={selected && !isLoading}
+        >
+                <PlaylistImage src={playlist.images[0].url} onClick={onClick} />
                 <PlaylistTitle>{playlist.name}</PlaylistTitle>
-            </div>
-            
         </LoadingOverlay>
     );
 };

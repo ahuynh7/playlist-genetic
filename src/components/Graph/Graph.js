@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react";
-import { Button, ButtonGroup, ButtonToolbar } from "react-bootstrap";
+import { useContext } from "react";
+import { Button, ButtonGroup } from "react-bootstrap";
 import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
 
 import { graphTypeEnum, MainContext } from "../Main/Main";
-import { GraphWrapper } from "./Graph.styles";
+import { ButtonToolbar, GraphWrapper } from "./Graph.styles";
 import GradientLegend from "./GradientLegend";
 
 export const featureAdjectives = {
@@ -20,7 +20,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, isLoading, graphType, map, setFeature} = useContext(MainContext);
+    const {feature, graphType, map, setFeature} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -38,17 +38,12 @@ const Graph = () => {
         }
     }
 
-    useEffect(() => {
-        console.log(isLoading);
-    }, [isLoading]);
-
     return ( <>
         <GraphWrapper>
             <ResponsiveContainer>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
                     margin={{bottom: 20}}
                 >
-                   
                     <XAxis dataKey="value" allowDataOverflow
                         tick={feature === "tempo" || feature === "loudness"}
                         tickSize={5}
