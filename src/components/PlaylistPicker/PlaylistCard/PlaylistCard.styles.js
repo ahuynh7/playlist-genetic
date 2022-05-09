@@ -1,15 +1,22 @@
 import { Card as CustomCard } from "react-bootstrap";
+import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import styled from "styled-components";
 
-export const Card = styled(CustomCard)`
+const cardBorderRadius = 10;
+
+export const LoadingOverlay = styled(LoadingOverlayWrapper)`
     width: 121px;
     height: 100%;
     margin: 0 10px;
     padding: 5px;
     border: ${({selected}) => selected ? "1px solid" : "hidden"};
-    border-radius: 10px;
+    border-radius: ${cardBorderRadius}px;
     background-color: var(--lightGrey);
     cursor: pointer;
+
+    ._loading_overlay_overlay {
+        border-radius: ${cardBorderRadius - 2}px;
+    }
 `;
 
 export const PlaylistImage = styled.img`
