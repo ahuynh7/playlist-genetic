@@ -3,7 +3,7 @@ import { DropdownButton } from "react-bootstrap";
 import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
 
 import { graphTypeEnum, MainContext } from "../Main/Main";
-import { GraphWrapper } from "./Graph.styles";
+import { ButtonToolbar, GraphWrapper } from "./Graph.styles";
 import GradientLegend from "./GradientLegend";
 import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
@@ -38,24 +38,27 @@ const Graph = () => {
             ]
         }
     }
-
+    
     return ( <>
-        <DropdownButton title="Features" size="sm">
-            {Object.keys(featureAdjectives).map((feature, i) => 
-                <DropdownItem variant="outline-secondary" key={i}
-                    disabled={graphType.current === graphTypeEnum.topItems}
-                    onClick={() => setFeature(feature)}
-                >
-                    {feature}
-                </DropdownItem>
-            )}
-        </DropdownButton>
+        <ButtonToolbar>
+            <DropdownButton title="Features " size="sm" variant="outline-secondary">
+                {Object.keys(featureAdjectives).map((feature, i) => 
+                    <DropdownItem variant="outline-secondary" key={i}
+                        disabled={graphType.current === graphTypeEnum.topItems}
+                        onClick={() => setFeature(feature)}
+                    >
+                        {feature}
+                    </DropdownItem>
+                )}
+            </DropdownButton>
+        </ButtonToolbar>
         <GraphWrapper>
-            <ResponsiveContainer>
-                <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
-                    margin={{bottom: 20}}
+            <ResponsiveContainer debounce={1}>
+                <BarChart
+                    data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
+                    margin={{bottom: 20}} 
                 >
-                    <XAxis dataKey="value" allowDataOverflow
+                    <XAxis dataKey="value" allowDataOverflow 
                         tick={feature === "tempo" || feature === "loudness"}
                         tickSize={5}
                         type="number"
