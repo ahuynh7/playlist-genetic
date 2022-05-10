@@ -18,6 +18,10 @@ export const LoadingOverlay = styled(LoadingOverlayWrapper)`
     }
 `;
 
+export const Card = styled.div`
+    height: 100%;
+`;
+
 export const PlaylistImage = styled.img`
     width: 100%;
     height: 121px;

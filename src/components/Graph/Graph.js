@@ -1,10 +1,11 @@
 import { useContext } from "react";
-import { Button, ButtonGroup } from "react-bootstrap";
+import { DropdownButton } from "react-bootstrap";
 import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
 
 import { graphTypeEnum, MainContext } from "../Main/Main";
-import { ButtonToolbar, GraphWrapper } from "./Graph.styles";
+import { GraphWrapper } from "./Graph.styles";
 import GradientLegend from "./GradientLegend";
+import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
 export const featureAdjectives = {
     popularity: ["obscure", "popular"],
@@ -39,6 +40,16 @@ const Graph = () => {
     }
 
     return ( <>
+        <DropdownButton title="Features" size="sm">
+            {Object.keys(featureAdjectives).map((feature, i) => 
+                <DropdownItem variant="outline-secondary" key={i}
+                    disabled={graphType.current === graphTypeEnum.topItems}
+                    onClick={() => setFeature(feature)}
+                >
+                    {feature}
+                </DropdownItem>
+            )}
+        </DropdownButton>
         <GraphWrapper>
             <ResponsiveContainer>
                 <BarChart data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
@@ -59,18 +70,7 @@ const Graph = () => {
                 </BarChart>
             </ResponsiveContainer>
         </GraphWrapper>
-        <ButtonToolbar>
-            <ButtonGroup size="sm">
-                {Object.keys(featureAdjectives).map((feature, i) => 
-                    <Button variant="outline-secondary" key={i}
-                        disabled={graphType.current === graphTypeEnum.topItems}
-                        onClick={() => setFeature(feature)}
-                    >
-                        {feature}
-                    </Button>
-                )}
-            </ButtonGroup>
-        </ButtonToolbar>
+        
         </>
     );
 };
