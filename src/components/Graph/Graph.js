@@ -1,11 +1,9 @@
 import { useContext } from "react";
-import { DropdownButton } from "react-bootstrap";
 import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
 
-import { graphTypeEnum, MainContext } from "../Main/Main";
-import { ButtonToolbar, GraphWrapper } from "./Graph.styles";
+import { MainContext } from "../Main/Main";
+import { GraphWrapper } from "./Graph.styles";
 import GradientLegend from "./GradientLegend";
-import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
 export const featureAdjectives = {
     popularity: ["obscure", "popular"],
@@ -21,7 +19,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, graphType, map, setFeature} = useContext(MainContext);
+    const {feature, map} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -39,19 +37,7 @@ const Graph = () => {
         }
     }
     
-    return ( <>
-        <ButtonToolbar>
-            <DropdownButton title="Features " size="sm" variant="outline-secondary">
-                {Object.keys(featureAdjectives).map((feature, i) => 
-                    <DropdownItem variant="outline-secondary" key={i}
-                        disabled={graphType.current === graphTypeEnum.topItems}
-                        onClick={() => setFeature(feature)}
-                    >
-                        {feature}
-                    </DropdownItem>
-                )}
-            </DropdownButton>
-        </ButtonToolbar>
+    return (
         <GraphWrapper>
             <ResponsiveContainer debounce={1}>
                 <BarChart
@@ -66,15 +52,13 @@ const Graph = () => {
                         padding={{left: 5}}
                     />
                     <YAxis axisLine={false} tickLine={false}>
-                        <Label position="left" value="frequency" angle={-90} offset={-10} />
+                        <Label position="insideLeft" value="frequency" angle={-90} offset={6} />
                     </YAxis>
                     <Legend content={<GradientLegend feature={feature} />} />
                     <Bar dataKey="freq" fill="#1db954"/>
                 </BarChart>
             </ResponsiveContainer>
         </GraphWrapper>
-        
-        </>
     );
 };
 

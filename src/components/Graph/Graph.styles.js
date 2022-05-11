@@ -1,15 +1,17 @@
 import { ButtonToolbar as CustomButtonToolbar } from "react-bootstrap";
 import styled from "styled-components";
 
+const graphWidthPercentage = 84;
+
 export const GraphWrapper = styled.div`
     margin: 10px auto 0 auto;
-    width: 88%;
+    width: ${graphWidthPercentage}%;
     height: 420px;
 `;
 
 export const ButtonToolbar = styled(CustomButtonToolbar)`
     margin: 100px auto 0 auto;
-    width: 88%;
+    width: ${graphWidthPercentage}%;
     justify-content: end;
 `;
 
