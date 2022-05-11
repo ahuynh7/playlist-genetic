@@ -20,7 +20,7 @@ const TopItemPicker = () => {
         graphType.current = graphTypeEnum.topItems;
 
         setTopItem(itemList);
-        setFeature('popularity');       //top artists do not contain any other data besides a popularity index
+        setFeature("popularity");       //top artists do not contain any other data besides a popularity index
     };
 
     //useEffect here handles topItem changes

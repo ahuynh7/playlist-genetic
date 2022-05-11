@@ -1,8 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const ME = "https://api.spotify.com/v1/me";
-const SPOTIFY = "https://api.spotify.com/v1";
+import { ME, SPOTIFY } from "../rootReducer";
 
 export const getUserPlaylists = createAsyncThunk("playlists",
     async (next=null, {fulfillWithValue, getState, rejectWithValue}) => {
@@ -22,7 +21,7 @@ export const getUserPlaylists = createAsyncThunk("playlists",
             return fulfillWithValue(await axios
                 .get(url, {headers, params})
                 .then(({data}) => data)
-            , {userId: getState().user.user.id});
+            , {userId: getState().user.id});
         }
         catch (error) {
             return rejectWithValue(error.response.data);
@@ -44,7 +43,7 @@ export const getPlaylistTracks = createAsyncThunk("playlists/{playlist_id}/track
                 //because so many calls are made per second, api will limit calls; retry after 1 second
             };
             let params = {
-                market: getState().user.user.country,       //specify market value to get accurate popularity index
+                market: getState().user.country,       //specify market value to get accurate popularity index
                 fields: "items(track(id,is_local,restrictions,name,popularity,type)),next,total",
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
@@ -64,7 +63,7 @@ export const getPlaylistTracks = createAsyncThunk("playlists/{playlist_id}/track
         condition: ({playlistId}, {getState}) => {
             let playlist = getState().playlist.playlists[playlistId];
 
-            return (playlist.owner.id === getState().user.user.id) && !playlist.collaborative
+            return (playlist.owner.id === getState().user.id) && !playlist.collaborative
         }
     }
 );

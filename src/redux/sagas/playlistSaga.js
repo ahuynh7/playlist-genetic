@@ -77,7 +77,6 @@ function* playlistSaga() {
 
     //every rejection, send to be retried.  hopefully this shouldn"t execute
     yield takeEvery(getPlaylistTracks.rejected, retryGetPlaylistTracks);        
-    
 }
 
 export default playlistSaga;
