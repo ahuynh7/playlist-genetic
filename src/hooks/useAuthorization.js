@@ -63,10 +63,7 @@ export const useRequestAuthorization = () => {
         let scope = [
             "user-read-private",
             "user-top-read",
-            "user-library-read",
             "user-read-recently-played",
-            "user-read-currently-playing",
-            "user-follow-read",
             "playlist-read-private"
         ];
         let query = stringify({
