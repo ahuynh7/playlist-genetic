@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { Navbar as CustomNavbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { UserContext } from "../Home/Home";
-import { NavbarBrand, NavbarLinks, ProfilePicture } from "./Navbar.styles";
+import { NavbarBrand, NavbarLinks, NavbarWrapper, ProfilePicture } from "./Navbar.styles";
 
 const Navbar = () => {
     const {requestAuthorization} = useContext(AuthorizationContext);
@@ -15,26 +14,26 @@ const Navbar = () => {
     };
 
     return (
-        <CustomNavbar className="justify-content-between" expand="lg">
+        <NavbarWrapper expand="lg">
             <NavbarBrand>Playlist Genetic</NavbarBrand>
             {hasUserLoaded() ?
                 <NavbarLinks>
                     <ProfilePicture src={user.images[0].url}
                         onClick={() => window.open(user.external_urls.spotify)}
                     />
-                    <CustomNavbar.Text>
+                    <NavbarWrapper.Text>
                         {/* handle logout */}
                         <Link to="" onClick={() => window.location.reload()}>Logout</Link>
-                    </CustomNavbar.Text>
+                    </NavbarWrapper.Text>
                 </NavbarLinks>
                 :
                 <NavbarLinks>
-                    <CustomNavbar.Text>
+                    <NavbarWrapper.Text>
                         <Link to="" onClick={requestAuthorization}>Login</Link>
-                    </CustomNavbar.Text>
+                    </NavbarWrapper.Text>
                 </NavbarLinks>
             }
-        </CustomNavbar>
+        </NavbarWrapper>
     );
 };
 

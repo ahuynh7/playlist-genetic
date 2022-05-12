@@ -1,5 +1,10 @@
-import { NavbarBrand as CustomNavbarBrand } from "react-bootstrap";
+import { Navbar as CustomNavbar, NavbarBrand as CustomNavbarBrand } from "react-bootstrap";
 import styled from "styled-components";
+
+export const NavbarWrapper = styled(CustomNavbar)`
+    justify-content: space-between;
+    background: var(--lightGrey);
+`;
 
 export const NavbarBrand = styled(CustomNavbarBrand)`
     margin-left: 20px;

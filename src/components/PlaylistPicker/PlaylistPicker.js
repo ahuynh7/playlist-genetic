@@ -5,12 +5,10 @@ import { graphTypeEnum, MainContext } from "../Main/Main";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import PlaylistCard from "./PlaylistCard";
 import { MenuContainer } from "./PlaylistPicker.styles";
-import { usePreventBodyScroll } from "../../hooks/usePreventBodyScroll";
 
 
 const PlaylistPicker = () => {
     const {graphType, map, mapTrackList} = useContext(MainContext);
-    const {disableScroll, enableScroll} = usePreventBodyScroll();
     const playlistTrackFetch = usePlaylistTracksFetch();
     const playlists = useUserPlaylistFetch();
     const [selected, setSelected] = useState("");
@@ -36,17 +34,8 @@ const PlaylistPicker = () => {
     }, [graphType, map]);
 
     return (
-        <MenuContainer onMouseEnter={disableScroll} onMouseLeave={enableScroll}>
-            <ScrollMenu
-                onWheel={({scrollPrev, scrollNext}, event) => {
-                    if (event.deltaY < 0) {
-                        scrollPrev();
-                    
-                    } else if (event.deltaY > 0) {
-                        scrollNext();
-                    }
-                }}
-            >
+        <MenuContainer>
+            <ScrollMenu>
                 {Object.values(playlists).map(playlist => 
                     <PlaylistCard
                         itemId={playlist.id}

@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { useUserFetch } from "../../hooks/useUser";
+import Footer from "../Footer";
 import Login from "../Login";
 import Navbar from "../Navbar";
 
@@ -29,7 +30,7 @@ const Home = () => {
             <Login />
             }
             <Outlet />
-            {/* footer here */}
+            <Footer />
         </UserContext.Provider>
     );
 };

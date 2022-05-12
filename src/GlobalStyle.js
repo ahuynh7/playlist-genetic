@@ -2,9 +2,10 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
     :root {
-        --maxWidth: 1280px; 
+        --maxWidth: 1280px;
+        --sideMargin: 88%;
         --white: #fff;
-        --lightGrey: #eee;
+        --lightGrey: #DADFE2;
         --medGrey: #353535; 
         --darkGrey: #1c1c1c;
         --fontSuperBig: 2.5rem;
@@ -17,8 +18,7 @@ export const GlobalStyle = createGlobalStyle`
         font-family: Abel, sans-serif;
     }
 
-    body {  
-        margin: 0;
+    body {
         box-sizing: border-box;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
