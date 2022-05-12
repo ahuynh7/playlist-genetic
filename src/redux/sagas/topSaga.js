@@ -3,6 +3,8 @@ import { delay, put, take, takeEvery } from "redux-saga/effects";
 import { getUserTopArtists, getUserTopTracks } from "../slices/topSlice";
 import { getUser } from "../slices/userSlice";
 
+const terms = ["short_term", "medium_term", "long_term"];
+
 function* retryGetUserTop(thunk, {meta, payload}) {
     if (payload !== 503 && payload !== null) return;        //handle timeouts?
 
@@ -11,9 +13,7 @@ function* retryGetUserTop(thunk, {meta, payload}) {
 }
 
 function* topSaga() {
-    const terms = ["short_term", "medium_term", "long_term"];
-
-    //handle 503 errors
+    //handle 503 errors, because they are common here
     yield takeEvery(getUserTopTracks.rejected, retryGetUserTop, getUserTopTracks);
     yield takeEvery(getUserTopArtists.rejected, retryGetUserTop, getUserTopArtists);
 
