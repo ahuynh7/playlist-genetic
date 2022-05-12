@@ -19,7 +19,10 @@ function* handleGetTrackFeatures({payload}) {
 
     //splits trackList into 100 item chunks, which is the limit of api query
     for (let i = 0; i < trackList.length; i += 100) {
-        yield put(getTrackFeatures({playlistId: payload, trackIds: trackList.slice(i, i + 100)}));
+        yield put(getTrackFeatures({
+            playlistId: payload, 
+            trackIds: trackList.slice(i, i + 100)
+        }));
         yield delay(322);
     }
 

@@ -20,7 +20,14 @@ export const GlobalStyle = createGlobalStyle`
 
     body {
         box-sizing: border-box;
+
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+
+        #root {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
     }
 `;

@@ -69,7 +69,7 @@ export const getPlaylistTracks = createAsyncThunk("playlists/{playlist_id}/track
     }
 );
 
-export const getTrackFeatures = createAsyncThunk("audio-features",
+export const getTrackFeatures = createAsyncThunk("playlists/audio-features",
     async ({trackIds}, {getState, rejectWithValue}) => {
         try {
             let url = SPOTIFY + "/audio-features";

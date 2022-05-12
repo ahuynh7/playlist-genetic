@@ -38,6 +38,33 @@ export const getUserTopTracks = createAsyncThunk("top/tracks",
     }
 );
 
+export const getTopTrackFeatures = createAsyncThunk("top/tracks/audio-features",
+    async ({trackIds}, {getState, rejectWithValue}) => {
+        try {
+            let url = SPOTIFY + "/audio-features";
+            let headers = {
+                Authorization: "Bearer " + getState().authorization.accessToken,
+                "Content-Type": "application/json"
+            };
+            let params = {
+                //id of all tracks to be fetched
+                ids: trackIds.join(",")
+            };
+
+            return await axios
+                .get(url, {headers, params})
+                .then(({data}) => data);
+        }
+        catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    },
+    {
+        //condition to check if toptrack list in store exists
+        condition: ({timeRange}, {getState}) => getState().top.tracks[timeRangeEnum[timeRange]]
+    }
+);
+
 export const getUserTopArtists = createAsyncThunk("top/artists",
     async (timeRange, {getState, rejectWithValue}) => {
         try {
@@ -87,6 +114,20 @@ export const topSlice = createSlice({
                 payload.items.forEach(track => {
                     state.tracks[timeRangeEnum[meta.arg]][track.id] = track;
                 });
+            }
+        );
+
+        builder.addCase(getTopTrackFeatures.fulfilled,
+            (state, {meta, payload}) => {
+                //appends tracks with its audio features
+                payload.audio_features
+                    .filter(feature => feature)     //spotify 404 errors
+                    .forEach(feature => {
+                        Object.assign(
+                            state.tracks[timeRangeEnum[meta.arg.timeRange]][feature.id],
+                            feature
+                        );
+                    });
             }
         );
 
