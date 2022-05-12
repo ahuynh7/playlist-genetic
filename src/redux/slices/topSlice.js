@@ -2,7 +2,8 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { ME, SPOTIFY } from "../rootReducer";
+export const ME = "https://api.spotify.com/v1/me";
+export const SPOTIFY = "https://api.spotify.com/v1";
 
 const timeRangeEnum = {
     "short_term": "shortTerm",

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useTop";
 import { graphTypeEnum, MainContext } from "../Main/Main";
 import { ItemsLabel, ListGroup, ListGroupItem } from "./TopItemPicker.styles";
 

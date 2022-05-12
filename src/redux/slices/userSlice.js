@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { ME } from "../rootReducer";
+export const ME = "https://api.spotify.com/v1/me";
+export const SPOTIFY = "https://api.spotify.com/v1";
 
 export const getUser = createAsyncThunk("me",
     async (_, {getState, rejectWithValue}) => {
@@ -35,7 +36,7 @@ export const userSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(getUser.fulfilled,
             (state, {payload}) => {
-                state = payload;
+                Object.assign(state, payload);
             }
         );
     }

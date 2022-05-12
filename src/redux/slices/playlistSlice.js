@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { ME, SPOTIFY } from "../rootReducer";
+export const ME = "https://api.spotify.com/v1/me";
+export const SPOTIFY = "https://api.spotify.com/v1";
 
 export const getUserPlaylists = createAsyncThunk("playlists",
     async (next=null, {fulfillWithValue, getState, rejectWithValue}) => {
@@ -16,7 +17,7 @@ export const getUserPlaylists = createAsyncThunk("playlists",
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get("offset") : null
             };
-
+            
             //using fulfillWithValue to inject extra meta data (userId)
             return fulfillWithValue(await axios
                 .get(url, {headers, params})
@@ -61,7 +62,7 @@ export const getPlaylistTracks = createAsyncThunk("playlists/{playlist_id}/track
     {
         //if the playlist is not owned by user and not collaborative
         condition: ({playlistId}, {getState}) => {
-            let playlist = getState().playlist.playlists[playlistId];
+            let playlist = getState().playlist[playlistId];
 
             return (playlist.owner.id === getState().user.id) && !playlist.collaborative
         }
@@ -91,24 +92,22 @@ export const getTrackFeatures = createAsyncThunk("audio-features",
     },
     {
         //condition to check if playlist in store exists
-        condition: ({playlistId}, {getState}) => getState().playlist.playlists[playlistId]
+        condition: ({playlistId}, {getState}) => getState().playlist[playlistId]
     }
 );
 
 export const playlistSlice = createSlice({
     name: "playlist",
 
-    initialState: {
-        playlists: {}
-    },
+    initialState: {},
 
     reducers: {
         completePlaylist: (state, {payload}) => {
-            state.playlists[payload].complete = true;
+            state[payload].complete = true;
         },
 
         analyzePlaylist: (state, {payload}) => {
-            state.playlists[payload].analysis = true;
+            state[payload].analysis = true;
         }
     },
 
@@ -123,7 +122,7 @@ export const playlistSlice = createSlice({
                         playlist["complete"] = null;        //boolean which monitors if all playlist tracks have been fetched
                         playlist["analysis"] = null;        //boolean which monitors if all playlist tracks have an analysis
                         playlist.tracks["items"] = {};        //adding items element to tracks
-                        state.playlists[playlist.id] = playlist;
+                        state[playlist.id] = playlist;
                     });
             }
         );
@@ -137,7 +136,7 @@ export const playlistSlice = createSlice({
                         :
                         false)     
                     .forEach(({track}) => {        //adding tracks in key: id and value: track pair
-                        state.playlists[meta.arg.playlistId].tracks.items[track.id] = track;
+                        state[meta.arg.playlistId].tracks.items[track.id] = track;
                     })   
                 
             }
@@ -150,7 +149,7 @@ export const playlistSlice = createSlice({
                     .filter(feature => feature)     //spotify 404 errors
                     .forEach(feature => {
                         Object.assign(
-                            state.playlists[meta.arg.playlistId].tracks.items[feature.id],
+                            state[meta.arg.playlistId].tracks.items[feature.id],
                             feature
                         );
                     });

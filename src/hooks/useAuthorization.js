@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { stringify } from "query-string";
 
-import { selectAuthorization } from "../App";
+import { selectAuthorization } from "../redux/store";
 import { refreshAccessToken, requestAccessToken } from "../redux/slices/authorizationSlice";
 
 export const useAuthorization = () => {
