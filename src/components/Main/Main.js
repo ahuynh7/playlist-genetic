@@ -7,7 +7,8 @@ import TopItemPicker from "../TopItemPicker";
 import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
 
 export const graphTypeEnum = {
-    topItems: "topItems",
+    topTracks: "topTracks",
+    topArtists: "topArtists",
     playlists: "playlists"
 };
 

@@ -26,9 +26,7 @@ const Home = () => {
     return (
         <UserContext.Provider value={user}>
             <Navbar />
-            {!isAuthorized && !isPendingAuthorization &&
-            <Login />
-            }
+            {!isAuthorized && !isPendingAuthorization && <Login />}
             <Outlet />
             <Footer />
         </UserContext.Provider>

@@ -29,7 +29,7 @@ const PlaylistPicker = () => {
 
     //resets selected playlist if user selects top item
     useEffect(() => {
-        if (graphType.current === graphTypeEnum.topItems) setSelected("");
+        if (graphType.current !== graphTypeEnum.playlists) setSelected("");
 
     }, [graphType, map]);
 

@@ -14,7 +14,7 @@ const FeaturesDropdown = () => {
             <DropdownButton title="Features " size="sm" variant="outline-secondary">
                 {Object.keys(featureAdjectives).map((feature, i) => 
                     <DropdownItem variant="outline-secondary" key={i}
-                        disabled={graphType.current === graphTypeEnum.topItems}
+                        disabled={graphType.current === graphTypeEnum.topArtists}
                         onClick={() => setFeature(feature)}
                     >
                         {feature}
