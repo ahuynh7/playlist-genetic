@@ -58,7 +58,6 @@ const PlaylistPicker = () => {
                 )}
             </ScrollMenu>
         </MenuContainer>
-        
     );
 };
 

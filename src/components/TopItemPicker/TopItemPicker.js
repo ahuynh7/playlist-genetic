@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 
-import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useUser";
+import { useUserTopArtistFetch, useUserTopTrackFetch } from "../../hooks/useTop";
 import { graphTypeEnum, MainContext } from "../Main/Main";
 import { ItemsLabel, ListGroup, ListGroupItem } from "./TopItemPicker.styles";
 
@@ -20,7 +20,7 @@ const TopItemPicker = () => {
         graphType.current = graphTypeEnum.topItems;
 
         setTopItem(itemList);
-        setFeature('popularity');       //top artists do not contain any other data besides a popularity index
+        setFeature("popularity");       //top artists do not contain any other data besides a popularity index
     };
 
     //useEffect here handles topItem changes
