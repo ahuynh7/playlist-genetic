@@ -1,6 +1,7 @@
 import { createContext, useCallback, useRef, useState } from "react";
 
 import Graph from "../Graph";
+import FeaturesDropdown from "../Graph/FeaturesDropdown";
 import PlaylistPicker from "../PlaylistPicker";
 import TopItemPicker from "../TopItemPicker";
 import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
@@ -52,6 +53,7 @@ const Main = () => {
             <TopItemPicker />
             <ItemsLabel>Playlists</ItemsLabel>
             <PlaylistPicker />
+            <FeaturesDropdown />
             <Graph />
         </MainContext.Provider>
     );

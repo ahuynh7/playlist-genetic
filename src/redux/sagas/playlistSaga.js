@@ -1,6 +1,5 @@
 import { actionChannel, all, delay, fork, put, select, take, takeEvery } from "redux-saga/effects";
-import { selectPlaylist } from "../../App";
-import { requestAccessToken } from "../slices/authorizationSlice";
+import { selectPlaylist } from "../store";
 
 import { analyzePlaylist, completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from "../slices/playlistSlice";
 import { getUser } from "../slices/userSlice";
@@ -15,13 +14,13 @@ function* retryGetPlaylistTracks({meta, payload}) {
 }
 
 function* handleGetTrackFeatures({payload}) {
-    let {playlists} = yield select(selectPlaylist);
+    let playlists = yield select(selectPlaylist);
     let trackList = Object.keys(playlists[payload].tracks.items);
 
     //splits trackList into 100 item chunks, which is the limit of api query
     for (let i = 0; i < trackList.length; i += 100) {
         yield put(getTrackFeatures({playlistId: payload, trackIds: trackList.slice(i, i + 100)}));
-        yield delay(420);
+        yield delay(322);
     }
 
     yield put(analyzePlaylist(payload));        //confirms that playlist has all features fetched
@@ -46,7 +45,7 @@ function* paginate({meta, payload, thunk, type}) {
 export function* throttle(pattern, thunk) {
     //actionChannel takes incoming action patterns to be sequentially executed
     const throttleChannel = yield actionChannel(pattern);
-    const rate = 4;      //throttles requests time / second
+    const rate = 5;      //throttles requests time / second
 
     while (true) {
         let action = yield take(throttleChannel);
@@ -59,8 +58,6 @@ export function* throttle(pattern, thunk) {
 }
 
 function* playlistSaga() {
-    yield take(requestAccessToken.fulfilled);
-
     //side effects to be throttled
     //template: fork(throttle, .fulfilled, ),
     yield all([
@@ -72,12 +69,11 @@ function* playlistSaga() {
     yield take(getUser.fulfilled);      //ensures user data is fetched first
     yield put(getUserPlaylists());
 
-    //handle fetching tracks" features given getPlaylistTracks payload
+    //handle fetching tracks' features given getPlaylistTracks payload
     yield takeEvery(completePlaylist.type, handleGetTrackFeatures);
 
     //every rejection, send to be retried.  hopefully this shouldn"t execute
     yield takeEvery(getPlaylistTracks.rejected, retryGetPlaylistTracks);        
-    
 }
 
 export default playlistSaga;
