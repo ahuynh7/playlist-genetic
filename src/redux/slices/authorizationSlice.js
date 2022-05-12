@@ -3,6 +3,7 @@ import { Buffer } from "buffer";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const TOKEN = "https://accounts.spotify.com/api/token";
+
 const ENCODED_ID = Buffer.from(process.env.REACT_APP_CLIENT_ID + ":" + process.env.REACT_APP_CLIENT_SECRET).toString("base64");
 
 export const requestAccessToken = createAsyncThunk("callback",
