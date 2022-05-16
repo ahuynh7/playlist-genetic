@@ -8,7 +8,7 @@ export const GraphWrapper = styled.div`
 `;
 
 export const ButtonToolbar = styled(CustomButtonToolbar)`
-    margin: 100px auto 0 auto;
+    margin: 10px auto;
     width: var(--sideMargin);
     justify-content: end;
 `;

@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { MainContext } from "../../Main/Main";
 import { Card, LoadingOverlay, PlaylistImage, PlaylistTitle } from "./PlaylistCard.styles";
 
-const PlaylistCard = ({playlist, onClick, selected}) => {
+const PlaylistCard = ({playlist, selected, ...onClick}) => {
     const {isLoading} = useContext(MainContext);
     
 
@@ -13,8 +13,9 @@ const PlaylistCard = ({playlist, onClick, selected}) => {
             fadeSpeed={420}
             active={isLoading && selected}
             selected={selected && !isLoading}
+            text="Mapping tracks..."
         >
-            <Card onClick={onClick}>
+            <Card {...onClick}>
                 <PlaylistImage src={playlist.images[0].url} />
                 <PlaylistTitle>{playlist.name}</PlaylistTitle>
             </Card>

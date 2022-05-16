@@ -4,8 +4,9 @@ import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import { graphTypeEnum, MainContext } from "../Main/Main";
 import { usePlaylistTracksFetch, useUserPlaylistFetch } from "../../hooks/usePlaylist";
 import PlaylistCard from "./PlaylistCard";
-import { MenuContainer } from "./PlaylistPicker.styles";
-
+import { PlaylistPickerWrapper } from "./PlaylistPicker.styles";
+import PlaylistHeader from "../PlaylistHeader/PlaylistHeader";
+import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
 
 const PlaylistPicker = () => {
     const {graphType, map, mapTrackList} = useContext(MainContext);
@@ -34,7 +35,8 @@ const PlaylistPicker = () => {
     }, [graphType, map]);
 
     return (
-        <MenuContainer>
+        <PlaylistPickerWrapper>
+            <ItemsLabel>Playlists</ItemsLabel>
             <ScrollMenu>
                 {Object.values(playlists).map(playlist => 
                     <PlaylistCard
@@ -46,7 +48,8 @@ const PlaylistPicker = () => {
                     /> 
                 )}
             </ScrollMenu>
-        </MenuContainer>
+            <PlaylistHeader {...playlists[selected]} />
+        </PlaylistPickerWrapper>
     );
 };
 

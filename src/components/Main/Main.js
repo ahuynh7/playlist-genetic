@@ -3,8 +3,7 @@ import { createContext, useCallback, useRef, useState } from "react";
 import Graph from "../Graph";
 import FeaturesDropdown from "../Graph/FeaturesDropdown";
 import PlaylistPicker from "../PlaylistPicker";
-import TopItemPicker from "../TopItemPicker";
-import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
+//import TopItemPicker from "../TopItemPicker";
 
 export const graphTypeEnum = {
     topTracks: "topTracks",
@@ -51,8 +50,7 @@ const Main = () => {
 
     return (
         <MainContext.Provider value={contextPackage}>
-            <TopItemPicker />
-            <ItemsLabel>Playlists</ItemsLabel>
+            {/*<TopItemPicker /> temporarily disabled for quota extension approval*/}
             <PlaylistPicker />
             <FeaturesDropdown />
             <Graph />

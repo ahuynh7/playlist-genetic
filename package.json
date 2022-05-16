@@ -15,6 +15,7 @@
     "react-bootstrap": "^2.3.0",
     "react-dom": "^18.0.0",
     "react-horizontal-scrolling-menu": "^2.7.2",
+    "react-icons": "^4.3.1",
     "react-loading-overlay-ts": "^2.0.0",
     "react-redux": "^8.0.0",
     "react-router-dom": "^6.3.0",
