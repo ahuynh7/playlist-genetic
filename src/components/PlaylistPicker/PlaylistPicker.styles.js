@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
 export const PlaylistPickerWrapper = styled.div`
-    margin: 20px auto;
+    margin: 10px auto;
     width: var(--sideMargin);
 `;
