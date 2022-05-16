@@ -6,7 +6,6 @@ import { Card, LoadingOverlay, PlaylistImage, PlaylistTitle } from "./PlaylistCa
 const PlaylistCard = ({playlist, selected, ...onClick}) => {
     const {isLoading} = useContext(MainContext);
     
-
     return (
         <LoadingOverlay
             classNamePrefix="card_"
@@ -16,7 +15,7 @@ const PlaylistCard = ({playlist, selected, ...onClick}) => {
             text="Mapping tracks..."
         >
             <Card {...onClick}>
-                <PlaylistImage src={playlist.images[0].url} />
+                <PlaylistImage src={playlist.images[0]?.url} />
                 <PlaylistTitle>{playlist.name}</PlaylistTitle>
             </Card>
         </LoadingOverlay>
