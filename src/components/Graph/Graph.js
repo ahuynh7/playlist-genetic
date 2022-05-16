@@ -19,7 +19,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, map} = useContext(MainContext);
+    const {isLoading, feature, map} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {

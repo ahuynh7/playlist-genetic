@@ -1,4 +1,5 @@
 import { createContext, useCallback, useRef, useState } from "react";
+import { Collapse } from "react-bootstrap";
 
 import Graph from "../Graph";
 import FeaturesDropdown from "../Graph/FeaturesDropdown";
@@ -14,7 +15,7 @@ export const graphTypeEnum = {
 export const MainContext = createContext();
 
 const Main = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(null);
     const [feature, setFeature] = useState("popularity");       //default feature is popular
     const [map, setMap] = useState({});
     const graphType = useRef(null);
@@ -52,8 +53,12 @@ const Main = () => {
         <MainContext.Provider value={contextPackage}>
             {/*<TopItemPicker /> temporarily disabled for quota extension approval*/}
             <PlaylistPicker />
-            <FeaturesDropdown />
-            <Graph />
+            <Collapse in={isLoading !== null} mountOnEnter={true}>
+                <div>
+                    <FeaturesDropdown />
+                    <Graph />
+                </div>
+            </Collapse>
         </MainContext.Provider>
     );
 };
