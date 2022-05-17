@@ -1,4 +1,4 @@
-import { createContext, useCallback, useRef, useState } from "react";
+import { createContext, useCallback, useMemo, useRef, useState } from "react";
 import { Collapse } from "react-bootstrap";
 
 import Graph from "../Graph";
@@ -24,6 +24,7 @@ const Main = () => {
     //artists can only use popularity
     const mapTrackList = useCallback(trackList => { 
         let tempMap = {};
+        console.log(trackList)
 
         for (let track in trackList) {
             //handles error where features did not load into a track, for some reason
@@ -32,11 +33,19 @@ const Main = () => {
             //remove decimals if feature are these types.  causes data bars to be miniscule
             if (feature === "tempo" || feature === "loudness") featureValue = Math.round(featureValue);
 
-            if (tempMap[featureValue]) {
-                tempMap[featureValue]++;
-            }
-            else {
-                tempMap[featureValue] = 1;
+            //handles forming the map.  also stores at most 3 ids in a feature value
+            if (tempMap[featureValue] && tempMap[featureValue].ids.length < 3) {
+                tempMap[featureValue].freq++;
+                tempMap[featureValue].ids.push(track);
+
+            } else if (tempMap[featureValue]) {
+                tempMap[featureValue].freq++;
+                
+            } else {      //default
+                tempMap[featureValue] = {
+                    freq: 1,
+                    ids: [track],
+                };
             }
         }
         
@@ -45,15 +54,27 @@ const Main = () => {
 
     }, [feature]);
 
+    const dataMapper = useMemo(() => 
+        Object.keys(map)?.map(e => ({
+            value: e, 
+            freq: map[e].freq,
+            ids: map[e].ids
+        }))
+    , [map]);
+
     const contextPackage = {
-        feature, graphType, isLoading, map, mapTrackList, setIsLoading, setFeature
+        dataMapper, feature, graphType, isLoading, mapTrackList, setIsLoading, setFeature
     };
 
     return (
         <MainContext.Provider value={contextPackage}>
             {/*<TopItemPicker /> temporarily disabled for quota extension approval*/}
             <PlaylistPicker />
-            <Collapse in={isLoading !== null} mountOnEnter={true}>
+            <Collapse 
+                in={isLoading !== null}
+                mountOnEnter
+                timeout={1322}
+            >
                 <div>
                     <FeaturesDropdown />
                     <Graph />

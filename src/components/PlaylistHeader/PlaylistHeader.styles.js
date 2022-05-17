@@ -16,6 +16,16 @@ export const PlaylistHeaderWrapper = styled.div`
     }
 
     p {
-        padding: 4px;
+        margin: 0;
+        padding: 0 4px;
+        min-height: 96px;
+        
+        overflow: hidden;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
     }
 `;

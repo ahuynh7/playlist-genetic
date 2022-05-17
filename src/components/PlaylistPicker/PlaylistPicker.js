@@ -9,7 +9,7 @@ import PlaylistHeader from "../PlaylistHeader/PlaylistHeader";
 import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
 
 const PlaylistPicker = () => {
-    const {graphType, map, mapTrackList} = useContext(MainContext);
+    const {graphType, dataMapper, mapTrackList} = useContext(MainContext);
     const playlistTrackFetch = usePlaylistTracksFetch();
     const playlists = useUserPlaylistFetch();
     const [selected, setSelected] = useState("");
@@ -32,7 +32,7 @@ const PlaylistPicker = () => {
     useEffect(() => {
         if (graphType.current !== graphTypeEnum.playlists) setSelected("");
 
-    }, [graphType, map]);
+    }, [graphType, dataMapper]);
 
     return (
         <PlaylistPickerWrapper>

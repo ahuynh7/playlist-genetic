@@ -1,9 +1,17 @@
 import { useContext } from "react";
-import { BarChart, Bar, Legend, ResponsiveContainer, XAxis, YAxis, Label } from "recharts";
+import { 
+    BarChart, Bar, 
+    Legend, 
+    ResponsiveContainer, 
+    XAxis, YAxis, 
+    Label, 
+    Tooltip as GraphTooltip 
+} from "recharts";
 
 import { MainContext } from "../Main/Main";
 import { GraphWrapper } from "./Graph.styles";
 import GradientLegend from "./GradientLegend";
+import TooltipCursor from "./TooltipCursor";
 
 export const featureAdjectives = {
     popularity: ["obscure", "popular"],
@@ -19,7 +27,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, map} = useContext(MainContext);
+    const {feature, dataMapper} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -41,7 +49,7 @@ const Graph = () => {
         <GraphWrapper>
             <ResponsiveContainer debounce={1}>
                 <BarChart
-                    data={Object.keys(map)?.map(e => ({value: e, freq: map[e]}))}
+                    data={dataMapper}
                     margin={{bottom: 20}} 
                 >
                     <XAxis dataKey="value" allowDataOverflow 
@@ -54,8 +62,11 @@ const Graph = () => {
                     <YAxis axisLine={false} tickLine={false}>
                         <Label position="insideLeft" value="frequency" angle={-90} offset={6} />
                     </YAxis>
+                    <GraphTooltip content={null} cursor={<TooltipCursor />} />
                     <Legend content={<GradientLegend feature={feature} />} />
-                    <Bar dataKey="freq" fill="#1db954"/>
+                    <Bar dataKey="freq" fill="#1db954" cursor="pointer"
+                        onClick={x => console.log(x)}
+                    />
                 </BarChart>
             </ResponsiveContainer>
         </GraphWrapper>

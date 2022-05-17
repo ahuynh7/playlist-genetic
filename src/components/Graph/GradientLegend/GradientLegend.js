@@ -7,6 +7,7 @@ const GradientLegend = ({feature, chartWidth}) => {
 
     //offsets the padding to have legend appear directly under the xAxis
     //probably not the best way to go at this
+    //TODO: fix bug where if browser window is so narrow, the element disappears, resulting in undefined typeerror
     useEffect(() => {
         leftPadding.current = chartWidth - document
             .getElementsByClassName("recharts-cartesian-axis-line")[0]

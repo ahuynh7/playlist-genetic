@@ -20,7 +20,7 @@ export const GradientLegendContent = styled.div`
 
     p {
         font-style: italic;
-        margin: 0 0;
+        margin: 0;
     }
 
     .gradient {
@@ -29,5 +29,19 @@ export const GradientLegendContent = styled.div`
         flex-grow: 1;
         background-image: linear-gradient(to right, #9747FF, #DDC469);
         border-radius: 5px;
+    }
+`;
+
+export const TooltipCursorContent = styled.svg`
+    .stop {
+        stop-opacity: 1;
+    }
+
+    #stop_1 {
+        stop-color: rgba(255, 255, 255, 0);
+    }
+
+    #stop_2 {
+        stop-color: var(--darkGrey);
     }
 `;
