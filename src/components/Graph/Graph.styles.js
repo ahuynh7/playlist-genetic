@@ -2,7 +2,7 @@ import { ButtonToolbar as CustomButtonToolbar } from "react-bootstrap";
 import styled from "styled-components";
 
 export const GraphWrapper = styled.div`
-    margin: 10px auto 21vh auto;
+    margin: 10px auto 5vh auto;
     width: var(--sideMargin);
     height: 42vh;
 `;
