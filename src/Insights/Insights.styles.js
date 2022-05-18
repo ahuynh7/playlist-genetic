@@ -13,7 +13,8 @@ export const Track = styled.div`
 `;
 
 export const Thumb = styled.div`
-    height: 42px;
-    width: 42px;
+    height: 21px;
+    width: 21px;
     background-color: #999;
+    border-radius: 21px;
 `;

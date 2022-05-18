@@ -25,11 +25,9 @@ const GraphInsights = () => {
                 max={Object.keys(dataMapper).length - 1}
                 values={[sliderValue]}
                 onChange={value => setSliderValue(value[0])}
-                renderTrack={({props, children}) => 
-                    <Track {...props}>
-                      {children}
-                    </Track>
-                }
+                renderTrack={({props, children}) => <Track {...props}>
+                    {children}
+                </Track>}
                 renderThumb={({props}) => <Thumb {...props} />}
             />
         </InsightsWrapper>
