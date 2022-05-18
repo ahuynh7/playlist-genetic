@@ -62,7 +62,7 @@ const Graph = () => {
                     <YAxis axisLine={false} tickLine={false}>
                         <Label position="insideLeft" value="frequency" angle={-90} offset={6} />
                     </YAxis>
-                    <GraphTooltip content={null} cursor={<TooltipCursor />} />
+                    <GraphTooltip content={<></>} cursor={<TooltipCursor />} />
                     <Legend content={<GradientLegend feature={feature} />} />
                     <Bar dataKey="freq" fill="#1db954" cursor="pointer" />
                 </BarChart>

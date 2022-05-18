@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const PlaylistHeaderWrapper = styled.div`
-    margin-top: 90px;
+    margin-top: 69px;
 
     div {
         display: flex;

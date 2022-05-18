@@ -4,8 +4,9 @@ import { PlaylistHeaderWrapper } from "./PlaylistHeader.styles";
 
 const PlaylistHeader = playlist => {
     const handleHeaderClick = () => window.open(playlist.external_urls.spotify);
-
-    return (
+    
+    //renders if playlist has been selected
+    return (Object.keys(playlist).length !== 0 &&
         <PlaylistHeaderWrapper>
             <div>
                 <h2 id="header_title" onClick={handleHeaderClick}>
