@@ -11,7 +11,7 @@ import PlaylistHeader from "../PlaylistHeader/PlaylistHeader";
 import { ItemsLabel } from "../TopItemPicker/TopItemPicker.styles";
 
 const PlaylistPicker = () => {
-    const {graphType, dataMapper, mapTrackList} = useContext(MainContext);
+    const {graphType, chartMapper, mapTrackList} = useContext(MainContext);
     const playlistTrackFetch = usePlaylistTracksFetch();
     const playlists = useUserPlaylistFetch();
     const [selected, setSelected] = useState("");
@@ -34,7 +34,7 @@ const PlaylistPicker = () => {
     useEffect(() => {
         if (graphType.current !== graphTypeEnum.playlists) setSelected("");
 
-    }, [graphType, dataMapper]);
+    }, [graphType, chartMapper]);
 
     return (
         <Fade in={Object.keys(playlists).length > 0} mountOnEnter>

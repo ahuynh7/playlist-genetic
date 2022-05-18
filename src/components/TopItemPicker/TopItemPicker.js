@@ -11,7 +11,7 @@ const timeRangeTrans = {
 };
 
 const TopItemPicker = () => {
-    const {feature, graphType, dataMapper, mapTrackList, setFeature} = useContext(MainContext);
+    const {chartMapper, feature, graphType, mapTrackList, setFeature} = useContext(MainContext);
     const topTracks = useUserTopTrackFetch();
     const topArtists = useUserTopArtistFetch();
     const [topItem, setTopItem] = useState({});
@@ -45,7 +45,7 @@ const TopItemPicker = () => {
     useEffect(() => {
         if (graphType.current === graphTypeEnum.playlists) setTopItem({});
         
-    }, [graphType, dataMapper]);
+    }, [graphType, chartMapper]);
 
     return (
         <>

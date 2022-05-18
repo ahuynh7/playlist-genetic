@@ -27,7 +27,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, dataMapper} = useContext(MainContext);
+    const {feature, chartMapper} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -49,7 +49,7 @@ const Graph = () => {
         <GraphWrapper>
             <ResponsiveContainer debounce={1}>
                 <BarChart
-                    data={dataMapper}
+                    data={chartMapper}
                     margin={{bottom: 20}} 
                 >
                     <XAxis dataKey="value" allowDataOverflow 
