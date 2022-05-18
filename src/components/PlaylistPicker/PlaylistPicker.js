@@ -48,7 +48,7 @@ const PlaylistPicker = () => {
                     /> 
                 )}
             </ScrollMenu>
-            <PlaylistHeader {...playlists[selected]} />
+            {selected !== "" && <PlaylistHeader {...playlists[selected]} />}
         </PlaylistPickerWrapper>
     );
 };

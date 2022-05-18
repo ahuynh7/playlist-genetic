@@ -15,7 +15,7 @@ import TooltipCursor from "./TooltipCursor";
 
 export const featureAdjectives = {
     popularity: ["obscure", "popular"],
-    acousticness: ["electronic", "acoustic"],
+    acousticness: ["synthetic", "acoustic"],
     danceability: ["relaxed", "danceable"],
     energy: ["lethargic", "energetic"],
     instrumentalness: ["acapella", "instrumental"],
@@ -64,9 +64,7 @@ const Graph = () => {
                     </YAxis>
                     <GraphTooltip content={null} cursor={<TooltipCursor />} />
                     <Legend content={<GradientLegend feature={feature} />} />
-                    <Bar dataKey="freq" fill="#1db954" cursor="pointer"
-                        onClick={x => console.log(x)}
-                    />
+                    <Bar dataKey="freq" fill="#1db954" cursor="pointer" />
                 </BarChart>
             </ResponsiveContainer>
         </GraphWrapper>

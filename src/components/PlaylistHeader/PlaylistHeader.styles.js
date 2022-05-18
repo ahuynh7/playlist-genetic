@@ -3,9 +3,12 @@ import styled from "styled-components";
 export const PlaylistHeaderWrapper = styled.div`
     margin-top: 90px;
 
-    h2 {
+    div {
+        display: flex;
+    }
+
+    #header_title {
         margin: 0;
-        display: inline-flex;
         font-style: italic;
         font-weight: bold;
 
@@ -15,7 +18,16 @@ export const PlaylistHeaderWrapper = styled.div`
         }
     }
 
-    p {
+    #header_extLink {
+        margin-left: 10px;
+        align-self: center;
+
+        :hover {
+            cursor: pointer;
+        }
+    }
+
+    #header_desc {
         margin: 0;
         padding: 0 4px;
         min-height: 96px;
