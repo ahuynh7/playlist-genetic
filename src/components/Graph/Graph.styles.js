@@ -5,6 +5,10 @@ export const GraphWrapper = styled.div`
     margin: 10px auto 5vh auto;
     width: var(--sideMargin);
     height: 42vh;
+
+    tspan {
+        font-size: var(--fontSmall);
+    }
 `;
 
 export const ButtonToolbar = styled(CustomButtonToolbar)`

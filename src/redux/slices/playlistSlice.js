@@ -45,7 +45,14 @@ export const getPlaylistTracks = createAsyncThunk("playlists/{playlist_id}/track
             };
             let params = {
                 market: getState().user.country,       //specify market value to get accurate popularity index
-                fields: "items(track(album(images),external_urls,id,is_local,name,popularity,restrictions,type)),next,total",
+                fields: `
+                    items(
+                        track(album(external_urls,images,name),
+                        artists(external_urls,name),
+                        external_urls,id,is_local,name,popularity,restrictions,type)),
+                    next,
+                    total
+                `,
                 limit: 100,      //groups of 100 is max
                 //if next is being passed, use offset param, else keep null
                 offset: next ? new URLSearchParams(new URL(next).search).get("offset") : null

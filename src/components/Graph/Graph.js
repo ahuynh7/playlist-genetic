@@ -27,7 +27,7 @@ export const featureAdjectives = {
 };
 
 const Graph = () => {
-    const {feature, chartMapper} = useContext(MainContext);
+    const {feature, chartMapper, setSliderValue} = useContext(MainContext);
 
     const configureDomain = () => {
         switch (feature) {
@@ -64,7 +64,10 @@ const Graph = () => {
                     </YAxis>
                     <GraphTooltip content={<></>} cursor={<TooltipCursor />} />
                     <Legend content={<GradientLegend feature={feature} />} />
-                    <Bar dataKey="freq" fill="#1db954" cursor="pointer" />
+                    <Bar dataKey="freq" fill="#1db954" cursor="pointer"
+                        //if use clicks on a bar, it will show its insights
+                        onClick={({payload}) => setSliderValue(chartMapper.findIndex(e => e.value === payload.value))}
+                    />
                 </BarChart>
             </ResponsiveContainer>
         </GraphWrapper>

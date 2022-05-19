@@ -3,16 +3,16 @@ import { Range } from "react-range";
 
 import { MainContext } from "../components/Main/Main";
 import { InsightsLabel, InsightsWrapper, Thumb, Track } from "./Insights.styles";
+import InsightsGrid from "./InsightsGrid/InsightsGrid";
 
 const GraphInsights = () => {
-    const {dataMapper, feature} = useContext(MainContext);
-    const [sliderValue, setSliderValue] = useState(0);
+    const {dataMapper, feature, setSliderValue, sliderValue} = useContext(MainContext);
     const [selected, setSelected] = useState({});
 
     //reset slider value if feature or mapping has changed
     useEffect(() => {
         setSliderValue(0);
-    }, [dataMapper, feature]);
+    }, [dataMapper, setSliderValue]);
 
     //debounce the slider change effect to display the graph insight
     useEffect(() => {
@@ -44,7 +44,7 @@ const GraphInsights = () => {
                     <Thumb {...props} />
                 }
             />
-
+            <InsightsGrid tracks={selected?.tracks} />
         </InsightsWrapper>
     );
 };
