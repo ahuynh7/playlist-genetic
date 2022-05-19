@@ -47,7 +47,7 @@ const Graph = () => {
     
     return (
         <GraphWrapper>
-            <ResponsiveContainer debounce={1}>
+            <ResponsiveContainer debounce={1} minWidth={50}>
                 <BarChart
                     data={chartMapper}
                     margin={{bottom: 20}} 

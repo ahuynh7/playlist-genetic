@@ -9,7 +9,7 @@ const GraphInsights = () => {
     const {dataMapper, feature, setSliderValue, sliderValue} = useContext(MainContext);
     const [selected, setSelected] = useState({});
     const [bufferValue, setBufferValue] = useState(sliderValue);
-    console.log('x')
+    
     //reset slider value if feature or mapping has changed
     useEffect(() => {
         setBufferValue(0);

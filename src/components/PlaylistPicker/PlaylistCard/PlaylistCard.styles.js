@@ -15,6 +15,10 @@ export const LoadingOverlay = styled(LoadingOverlayWrapper)`
     .card_overlay {
         border-radius: ${cardBorderRadius - 2}px;
     }
+
+    .card_content {
+        font-size: var(--fontSmall);
+    }
 `;
 
 export const Card = styled.div`
