@@ -5,11 +5,18 @@ export const InsightsWrapper = styled.div`
     width: var(--sideMargin);
 `;
 
+export const InsightsLabel = styled.h3`
+    margin: 0 0 20px 0;
+    text-transform: capitalize;
+    font-weight: bold;
+`;
+
 export const Track = styled.div`
     height: 6px;
     width: 100%;
     background-color: var(--medGrey);
     border-radius: 3px;
+    align-self: center;
 `;
 
 export const Thumb = styled.div`
