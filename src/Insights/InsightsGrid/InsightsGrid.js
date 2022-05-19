@@ -16,11 +16,11 @@ const InsightsGrid = ({tracks}) => {
                             {track.name}
                         </TrackName>
                         <div id="references">
-                            <TrackReference onClick={() => window.open(track.external_urls.artist.spotify)}>
+                            <TrackReference id="artist_ref" onClick={() => window.open(track.external_urls.artist.spotify)}>
                                 {track.artist}
                             </TrackReference>
-                            <BsDot id="dot"/>
-                            <TrackReference onClick={() => window.open(track.external_urls.album.spotify)}>
+                            <BsDot id="dot" size={16} />
+                            <TrackReference id="album_ref" onClick={() => window.open(track.external_urls.album.spotify)}>
                                 {track.album}
                             </TrackReference>
                         </div>

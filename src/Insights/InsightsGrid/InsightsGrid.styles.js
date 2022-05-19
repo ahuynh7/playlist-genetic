@@ -2,10 +2,12 @@ import { Card } from "react-bootstrap";
 import styled from "styled-components";
 
 export const InsightsGridContent = styled.div`
-    margin: 20px 0;
+    margin: 30px 0;
+    max-height: 69vh;
     padding: 8px;
+    overflow-y: scroll;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(222px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: 0.88rem;
 `;
 
@@ -21,8 +23,14 @@ export const InsightsGridCard = styled(Card)`
 
     #references {
         display: inline-flex;
+        max-width: 100%;
+
+        #artist_ref {
+            min-width: max-content;
+        }
 
         #dot {
+            min-width: 16px;
             align-self: center;
         }
     }
@@ -71,7 +79,7 @@ export const TrackReference = styled.p`
     display: -webkit-box;
 
     -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    -webkit-box-orient: vertical;    
 
     :hover {
         text-decoration: underline;

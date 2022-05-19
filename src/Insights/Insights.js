@@ -8,20 +8,24 @@ import InsightsGrid from "./InsightsGrid/InsightsGrid";
 const GraphInsights = () => {
     const {dataMapper, feature, setSliderValue, sliderValue} = useContext(MainContext);
     const [selected, setSelected] = useState({});
-
+    const [bufferValue, setBufferValue] = useState(sliderValue);
+    console.log('x')
     //reset slider value if feature or mapping has changed
     useEffect(() => {
-        setSliderValue(0);
+        setBufferValue(0);
     }, [dataMapper, setSliderValue]);
 
-    //debounce the slider change effect to display the graph insight
+    //debounce the buffer slider change effect to display the graph insight
     useEffect(() => {
         const timer = setTimeout(() => {
-            //render grid of tracks
-            setSelected(Object.values(dataMapper)[sliderValue]);
+            setSelected(Object.values(dataMapper)[bufferValue]);
         }, 222);
 
         return () => clearTimeout(timer);
+    }, [dataMapper, bufferValue]);
+
+    useEffect(() => {
+        setSelected(Object.values(dataMapper)[sliderValue])
     }, [dataMapper, sliderValue]);
 
     //waits for data to mount and derenders if playlist is empty
@@ -33,8 +37,9 @@ const GraphInsights = () => {
             <Range
                 min={0}
                 max={Object.keys(dataMapper).length - 1}
-                values={[sliderValue]}
-                onChange={value => setSliderValue(value[0])}
+                values={[bufferValue]}
+                onChange={value => setBufferValue(value[0])}
+                onFinalChange={value => setSliderValue(value[0])}
                 renderTrack={({props, children}) => 
                     <Track {...props}>
                         {children}

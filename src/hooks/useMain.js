@@ -27,7 +27,7 @@ const useMain = () => {
 
         for (let content of Object.values(trackList)) {
             //handles error where features did not load into a track, for some reason
-            let featureValue = content[feature] ? content[feature].toFixed(2) : 0;
+            let featureValue = Number(content[feature] ? content[feature].toFixed(2) : 0);
             
             //remove decimals if feature are these types.  some causes data bars to be miniscule
             if (
