@@ -3,17 +3,20 @@ import styled from "styled-components";
 export const InsightsWrapper = styled.div`
     margin: 0 auto 21vh auto;
     width: var(--sideMargin);
+    display: flex;
+    flex-direction: column;
 `;
 
 export const InsightsLabel = styled.h3`
     margin: 0 0 20px 0;
     text-transform: capitalize;
     font-weight: bold;
+    
 `;
 
 export const Track = styled.div`
     height: 6px;
-    width: 100%;
+    width: calc(100% - 30px);
     background-color: var(--medGrey);
     border-radius: 3px;
     align-self: center;
