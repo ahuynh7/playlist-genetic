@@ -6,8 +6,6 @@ export const LoginWrapper = styled.div`
     padding: 200px 20px 50px 20px;
     display: flex;
     flex-direction: column;
-
-    
 `;
 
 export const LoginButton = styled(Button)`

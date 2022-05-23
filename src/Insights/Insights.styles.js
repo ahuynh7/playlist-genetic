@@ -8,10 +8,22 @@ export const InsightsWrapper = styled.div`
 `;
 
 export const InsightsLabel = styled.h3`
-    margin: 0 0 20px 0;
+    margin: 0 0 5px 0;
     text-transform: capitalize;
     font-weight: bold;
-    
+`;
+
+export const InsightsDescription = styled.p`
+    margin-bottom: 20px;
+    font-size: var(--fontSmall);
+
+    overflow: hidden;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 `;
 
 export const Track = styled.div`

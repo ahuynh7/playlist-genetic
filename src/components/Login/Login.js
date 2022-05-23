@@ -32,7 +32,7 @@ const Login = () => {
         <LoginWrapper>
             {!isAuthorized && !isPendingAuthorization &&
             <LoginButton
-                variant="outline-light"
+                variant="dark"
                 size="lg"
                 onClick={requestAuthorization}
             >
