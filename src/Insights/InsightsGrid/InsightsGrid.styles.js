@@ -13,7 +13,7 @@ export const InsightsGridContent = styled.div`
 
 export const InsightsGridCard = styled(Card)`
     padding: 8px;
-    border-radius: 20px;
+    border-radius: 3px;
     flex-direction: row;
 
     #details {
@@ -40,11 +40,9 @@ export const TrackImage = styled.img`
     width: ${props => props.width}px;
     object-fit: cover;
     position: relative;
-    border-radius ${props => props.width}px;
 
     :hover {
         cursor: pointer;
-        opacity: 0.69;
     }
 `;
 

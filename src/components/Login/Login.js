@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef } from "react";
-import { Button } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { useAccessTokenFetch } from "../../hooks/useAuthorization";
+import { LoginButton, LoginWrapper } from "./Login.styles";
 
 const Login = () => {
-    const {requestAuthorization} = useContext(AuthorizationContext);
+    const {isAuthorized, isPendingAuthorization, requestAuthorization} = useContext(AuthorizationContext);
     const {accessTokenFetch} = useAccessTokenFetch();
     const navigate = useNavigate();
     const {search} = useLocation();
@@ -29,9 +29,16 @@ const Login = () => {
     }, [accessTokenFetch, navigate, search]);
     
     return (
-        <Button variant="primary" size="sm" onClick={requestAuthorization}>
-            log in
-        </Button>
+        <LoginWrapper>
+            {!isAuthorized && !isPendingAuthorization &&
+            <LoginButton
+                variant="outline-light"
+                size="lg"
+                onClick={requestAuthorization}
+            >
+                Login with Spotify
+            </LoginButton>}
+        </LoginWrapper>
     );
 };
 
