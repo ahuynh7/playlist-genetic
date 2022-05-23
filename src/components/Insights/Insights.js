@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Range } from "react-range";
 
-import { MainContext } from "../components/Main/Main";
+import { MainContext } from "../Main/Main";
 import { InsightsDescription, InsightsLabel, InsightsWrapper, Thumb, Track } from "./Insights.styles";
-import InsightsGrid from "./InsightsGrid/InsightsGrid";
+import InsightsGrid from "./InsightsGrid";
 
 const featureDescription = {
     acousticness: "A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.",
