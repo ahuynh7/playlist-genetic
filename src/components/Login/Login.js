@@ -6,7 +6,7 @@ import { useAccessTokenFetch } from "../../hooks/useAuthorization";
 import { LoginButton, LoginWrapper } from "./Login.styles";
 
 const Login = () => {
-    const {isAuthorized, isPendingAuthorization, requestAuthorization} = useContext(AuthorizationContext);
+    const {requestAuthorization} = useContext(AuthorizationContext);
     const {accessTokenFetch} = useAccessTokenFetch();
     const navigate = useNavigate();
     const {search} = useLocation();
@@ -30,7 +30,7 @@ const Login = () => {
     
     return (
         <LoginWrapper>
-            {!isAuthorized && !isPendingAuthorization &&
+            {!initital.current &&
             <LoginButton
                 variant="dark"
                 size="lg"
