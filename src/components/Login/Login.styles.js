@@ -11,6 +11,5 @@ export const LoginWrapper = styled.div`
 `;
 
 export const LoginButton = styled(Button)`
-    background-color: var(--spotifyGreen);
     align-self: center;
 `;

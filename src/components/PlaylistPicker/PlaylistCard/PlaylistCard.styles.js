@@ -33,6 +33,10 @@ export const PlaylistImage = styled.img`
     object-fit: cover;
     position: relative;
     overflow: hidden;
+
+    :hover {
+        opacity: 0.69;
+    }
 `;
 
 export const PlaylistTitle = styled.div`
