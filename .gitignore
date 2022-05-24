@@ -12,7 +12,6 @@
 /build
 
 # misc
-screenshots
 .vscode
 .DS_Store
 .env.local
