@@ -1,4 +1,5 @@
 import { BsDot } from "react-icons/bs";
+import { SpotifyIcon } from "../../Spotify";
 
 import { TrackImage, InsightsGridCard, InsightsGridContent, TrackName, TrackReference } from "../InsightsGrid/InsightsGrid.styles";
 
@@ -25,6 +26,7 @@ const InsightsGrid = ({tracks}) => {
                             </TrackReference>
                         </div>
                     </div>
+                    <SpotifyIcon height={21} />
                 </InsightsGridCard>
             )}
         </InsightsGridContent>

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
 import { MainContext } from "../../Main/Main";
+import { SpotifyLogo } from "../../Spotify";
 import { Card, LoadingOverlay, PlaylistImage, PlaylistTitle } from "./PlaylistCard.styles";
 
 const PlaylistCard = ({playlist, selected, ...onClick}) => {
@@ -15,6 +16,7 @@ const PlaylistCard = ({playlist, selected, ...onClick}) => {
             text="Mapping tracks..."
         >
             <Card {...onClick}>
+                <SpotifyLogo height={21.5} />
                 <PlaylistImage src={playlist.images[0]?.url} />
                 <PlaylistTitle>{playlist.name}</PlaylistTitle>
             </Card>
