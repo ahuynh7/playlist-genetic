@@ -7,7 +7,7 @@ import userSaga from "./sagas/userSaga";
 function* rootSaga() {
     yield all([
         fork(userSaga),
-        fork(topSaga),
+        //fork(topSaga),        //temporarily disabled to be granted quota extension request
         fork(playlistSaga)
     ]);
 }
