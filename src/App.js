@@ -9,6 +9,7 @@ import {
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Main from "./components/Main";
+import { useEffect } from "react";
 
 export const AuthorizationContext = createContext();
 
@@ -26,6 +27,10 @@ const App = () => {
         isPendingAuthorization, 
         requestAuthorization
     };
+
+    useEffect(() => {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+    }, []);
 
     return (
         <AuthorizationContext.Provider value={contextPackage}>
