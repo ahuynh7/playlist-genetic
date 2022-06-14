@@ -7,7 +7,7 @@ export const LoadingOverlay = styled(LoadingOverlayWrapper)`
     width: 132px;
     height: 100%;
     margin: 0 8px;
-    padding: 0 7px 7px 7px;
+    padding: 7px;
     border-radius: ${cardBorderRadius}px;
     background-color: ${({selected}) => selected ? "var(--medGrey)" : "var(--lightGrey)"};
     cursor: pointer;

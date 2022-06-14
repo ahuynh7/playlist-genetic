@@ -18,6 +18,7 @@ export const InsightsGridCard = styled(Card)`
 
     #details {
         margin-left: 5px;
+        margin-right: 6.5px;
         padding: 4px;
     }
 
