@@ -8,6 +8,6 @@ export const Logo = styled.img`
 
 export const Icon = styled.img`
     height: ${props => props.height}px;
-    margin: ${props => props.height / 2}px; 
+    margin: 2.5px; 
     margin-left: auto;
 `;

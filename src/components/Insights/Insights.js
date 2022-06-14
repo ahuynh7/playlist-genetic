@@ -35,11 +35,6 @@ const GraphInsights = () => {
         }
     };
 
-    //reset slider value if feature or mapping has changed
-    useEffect(() => {
-        setBufferValue(0);        //setting the buffer value to the first value possible
-    }, [dataMapper, setSliderValue]);
-
     //debounce the buffer slider change effect to display the graph insight
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -49,10 +44,16 @@ const GraphInsights = () => {
         return () => clearTimeout(timer);
     }, [dataMapper, bufferValue]);
 
+    //renders new grid if data was selected from graph
     useEffect(() => {
         setBufferValue(sliderValue);
         setSelected(Object.values(dataMapper)[sliderValue]);
     }, [dataMapper, sliderValue]);
+    
+    //reset slider value if feature or mapping has changed
+    useEffect(() => {
+        setBufferValue(0);        //setting the buffer value to the first value possible
+    }, [dataMapper]);
 
     //waits for data to mount and derenders if playlist is empty
     return (Object.keys(dataMapper).length !== 0 && 

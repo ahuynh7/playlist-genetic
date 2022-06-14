@@ -34,6 +34,10 @@ const App = () => {
                     <Route path="/" element={<Home />} >
                         <Route path="login" element={null} />
                         <Route path="main" element={<Main />} />
+                        <Route path="about" element={null} />
+                        <Route path="contact" element={null} />
+                        <Route path="donate" element={null} />
+                        <Route path="faq" element={null} />
                         {/* more routes to be added when footer is completed */}
                     </Route>
                     <Route path="*" element={<NotFound />} />
