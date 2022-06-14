@@ -1,4 +1,4 @@
-import { createContext} from "react";
+import { createContext } from "react";
 import { Collapse } from "react-bootstrap";
 import GraphInsights from "../Insights";
 import useMain from "../../hooks/useMain";
