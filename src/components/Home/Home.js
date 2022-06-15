@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { useUserFetch } from "../../hooks/useUser";
-import Advert from "../Advert";
 import Footer from "../Footer";
 import Login from "../Login";
 import Navbar from "../Navbar";
@@ -27,8 +26,7 @@ const Home = () => {
     return (
         <UserContext.Provider value={user}>
             <Navbar />
-            <Login />
-            <Advert />
+            {pathname !== "/about" && <Login />}
             <Outlet />
             <Footer />
         </UserContext.Provider>
