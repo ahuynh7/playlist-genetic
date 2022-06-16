@@ -19,3 +19,15 @@ export const FooterLink = styled(Link)`
     color: var(--black);
     text-decoration: none;
 `;
+
+export const FooterLinkWrapper = styled.div`
+    padding: 20px 100px 0 33%;
+
+    h3 {
+        margin-top: 20px;
+    }
+
+    @media only screen and (max-width: 600px) {
+        padding: 20px 50px;    
+    }
+`;
