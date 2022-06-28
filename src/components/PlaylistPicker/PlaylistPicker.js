@@ -52,7 +52,7 @@ const PlaylistPicker = () => {
                     )}
                 </ScrollMenu>
                 <Fade in={selected === ""}>
-                    <PlaylistToast>
+                    <PlaylistToast selected={selected !== ""}>
                         <TiArrowSortedUp size={20} />
                         <h4>Select a playlist to get started!</h4>
                     </PlaylistToast>

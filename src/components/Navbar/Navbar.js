@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { UserContext } from "../Home/Home";
@@ -8,6 +8,7 @@ import { NavbarBrand, NavbarLinks, NavbarWrapper, ProfilePicture } from "./Navba
 const Navbar = () => {
     const {requestAuthorization} = useContext(AuthorizationContext);
     const user = useContext(UserContext);
+    const navigate = useNavigate();
     
     const hasUserLoaded = () => {
         return Object.keys(user).length !== 0;
@@ -15,7 +16,7 @@ const Navbar = () => {
 
     return (
         <NavbarWrapper expand="lg">
-            <NavbarBrand>Playlist Genetic</NavbarBrand>
+            <NavbarBrand onClick={() => navigate("/main")}>Playlist Genetic</NavbarBrand>
             {hasUserLoaded() ?
                 <NavbarLinks>
                     <ProfilePicture src={user.images[0].url}
