@@ -3,12 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { useAccessTokenFetch } from "../../hooks/useAuthorization";
-import Advert from "../Advert";
 import { SpotifyLogo } from "../Spotify";
 import { LoginButton, LoginWrapper } from "./Login.styles";
 
 const Login = () => {
-    const {requestAuthorization} = useContext(AuthorizationContext);
+    const {isAuthorized, requestAuthorization} = useContext(AuthorizationContext);
     const {accessTokenFetch} = useAccessTokenFetch();
     const navigate = useNavigate();
     const {search} = useLocation();
@@ -24,28 +23,21 @@ const Login = () => {
             accessTokenFetch(code);
             navigate("/main");
         }
-        else {
-            //send back to home page
-        }
         
     }, [accessTokenFetch, navigate, search]);
     
     return (
-        <>
-            <LoginWrapper>
-                <SpotifyLogo color="Green" height={50} />
-                {!initital.current &&
-                <LoginButton
-                    variant="dark"
-                    size="lg"
-                    onClick={requestAuthorization}
-                >
-                    Login with Spotify
-                </LoginButton>}
-            </LoginWrapper>
-            <Advert />
-        </>
-        
+        <LoginWrapper>
+            <SpotifyLogo color="Green" height={50} />
+            {(!initital.current && !isAuthorized) &&
+            <LoginButton
+                variant="dark"
+                size="lg"
+                onClick={requestAuthorization}
+            >
+                Login with Spotify
+            </LoginButton>}
+        </LoginWrapper>
     );
 };
 
