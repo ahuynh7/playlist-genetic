@@ -15,6 +15,11 @@ const Home = () => {
     const navigate = useNavigate();
     const {pathname} = useLocation();
 
+    const acceptLogin = () => {
+        if (pathname === "/about" || pathname === "/faq") return false;
+        else return true;
+    };
+
     //prevents accessing /main route without proper authorization first
     useEffect(() => {
         if (pathname === "/main" && !isPendingAuthorization && !isAuthorized)
@@ -25,7 +30,7 @@ const Home = () => {
     return (
         <UserContext.Provider value={user}>
             <Navbar />
-            {pathname !== "/about" && <Login />}
+            {acceptLogin() && <Login />}
             <Outlet />
             <Footer />
         </UserContext.Provider>

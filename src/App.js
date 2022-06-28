@@ -10,6 +10,7 @@ import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Main from "./components/Main";
 import About from "./components/About";
+import FAQ from "./components/FAQ/FAQ";
 
 export const AuthorizationContext = createContext();
 
@@ -36,8 +37,7 @@ const App = () => {
                         <Route path="login" element={null} />
                         <Route path="main" element={<Main />} />
                         <Route path="about" element={<About />} />
-                        <Route path="donate" element={null} />
-                        <Route path="faq" element={null} />
+                        <Route path="faq" element={<FAQ />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>
