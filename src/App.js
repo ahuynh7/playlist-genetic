@@ -9,7 +9,8 @@ import {
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Main from "./components/Main";
-import { useEffect } from "react";
+import About from "./components/About";
+import FAQ from "./components/FAQ/FAQ";
 
 export const AuthorizationContext = createContext();
 
@@ -28,10 +29,6 @@ const App = () => {
         requestAuthorization
     };
 
-    useEffect(() => {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-    }, []);
-
     return (
         <AuthorizationContext.Provider value={contextPackage}>
             <BrowserRouter>
@@ -39,11 +36,8 @@ const App = () => {
                     <Route path="/" element={<Home />} >
                         <Route path="login" element={null} />
                         <Route path="main" element={<Main />} />
-                        <Route path="about" element={null} />
-                        <Route path="contact" element={null} />
-                        <Route path="donate" element={null} />
-                        <Route path="faq" element={null} />
-                        {/* more routes to be added when footer is completed */}
+                        <Route path="about" element={<About />} />
+                        <Route path="faq" element={<FAQ />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>

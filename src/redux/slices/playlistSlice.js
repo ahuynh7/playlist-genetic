@@ -145,7 +145,6 @@ export const playlistSlice = createSlice({
                     .forEach(({track}) => {        //adding tracks in key: id and value: track pair
                         state[meta.arg.playlistId].tracks.items[track.id] = track;
                     })   
-                
             }
         );
 

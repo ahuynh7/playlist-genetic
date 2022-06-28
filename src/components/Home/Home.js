@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthorizationContext } from "../../App";
 import { useUserFetch } from "../../hooks/useUser";
-import Advert from "../Advert";
 import Footer from "../Footer";
 import Login from "../Login";
 import Navbar from "../Navbar";
@@ -16,19 +15,22 @@ const Home = () => {
     const navigate = useNavigate();
     const {pathname} = useLocation();
 
+    const acceptLogin = () => {
+        if (pathname === "/about" || pathname === "/faq") return false;
+        else return true;
+    };
+
     //prevents accessing /main route without proper authorization first
     useEffect(() => {
-        if (pathname === "/main" && !isPendingAuthorization && !isAuthorized) {
+        if (pathname === "/main" && !isPendingAuthorization && !isAuthorized)
             navigate("/");
-        }
         
     }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
 
     return (
         <UserContext.Provider value={user}>
             <Navbar />
-            <Login />
-            <Advert />
+            {acceptLogin() && <Login />}
             <Outlet />
             <Footer />
         </UserContext.Provider>

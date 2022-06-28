@@ -7,7 +7,7 @@ import { SpotifyLogo } from "../Spotify";
 import { LoginButton, LoginWrapper } from "./Login.styles";
 
 const Login = () => {
-    const {requestAuthorization} = useContext(AuthorizationContext);
+    const {isAuthorized, requestAuthorization} = useContext(AuthorizationContext);
     const {accessTokenFetch} = useAccessTokenFetch();
     const navigate = useNavigate();
     const {search} = useLocation();
@@ -23,16 +23,13 @@ const Login = () => {
             accessTokenFetch(code);
             navigate("/main");
         }
-        else {
-            //send back to home page
-        }
         
     }, [accessTokenFetch, navigate, search]);
     
     return (
         <LoginWrapper>
             <SpotifyLogo color="Green" height={50} />
-            {!initital.current &&
+            {(!initital.current && !isAuthorized) &&
             <LoginButton
                 variant="dark"
                 size="lg"

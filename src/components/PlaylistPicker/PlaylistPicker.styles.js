@@ -7,6 +7,7 @@ export const PlaylistPickerWrapper = styled.div`
 
 export const PlaylistToast = styled.div`
     margin-top: 15px;
+    margin-bottom: ${props => props.selected ? 0 : 21}vh;
     display: flex;
     flex-direction: column;
     
