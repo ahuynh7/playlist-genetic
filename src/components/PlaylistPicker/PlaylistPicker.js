@@ -39,7 +39,7 @@ const PlaylistPicker = () => {
     return (
         <Fade in={Object.keys(playlists).length > 0} mountOnEnter>
             <PlaylistPickerWrapper>
-                <ItemsLabel>Playlists</ItemsLabel>
+                <ItemsLabel>Playlists ({Object.keys(playlists).length})</ItemsLabel>
                 <ScrollMenu>
                     {Object.values(playlists).map(playlist => 
                         <PlaylistCard

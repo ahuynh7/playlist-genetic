@@ -21,7 +21,7 @@ const GraphInsights = () => {
     const {dataMapper, feature, setSliderValue, sliderValue} = useContext(MainContext);
     const [selected, setSelected] = useState({});
     const [bufferValue, setBufferValue] = useState(sliderValue);
-    
+
     const getInsight = () => {
         switch (feature) {
             case "loudness":
@@ -59,7 +59,9 @@ const GraphInsights = () => {
     return (Object.keys(dataMapper).length !== 0 && 
         <InsightsWrapper>
             {/* add units if feature is tempo or loudness */}
-            <InsightsLabel>{`${getInsight()}`}</InsightsLabel>
+            <InsightsLabel>
+                {`${getInsight()} (${selected?.freq} ${selected?.freq > 1 ? "tracks" : "track"})`}
+            </InsightsLabel>
             <InsightsDescription>{featureDescription[feature]}</InsightsDescription>
             <Range
                 min={0}
