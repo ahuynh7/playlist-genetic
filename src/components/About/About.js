@@ -25,7 +25,7 @@ const About = () => {
                 skews, or biases of a certain audio feature within their own personal playlists.
             </p>
             <h3>Author</h3>
-            <p>Anh Huynh, CSULB Computer Science '23</p>
+            <p>Anh Huynh</p>
             <div className="flexRow">
                 <MdEmail size={20} 
                     onClick={event => {
