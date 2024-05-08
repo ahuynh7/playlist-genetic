@@ -47,10 +47,11 @@ const Graph = () => {
     
     return (
         <GraphWrapper>
-            <ResponsiveContainer debounce={1} minWidth={50}>
+            <ResponsiveContainer debounce={1} minWidth={50} minHeight={50}>
                 <BarChart
                     data={chartMapper}
                     margin={{bottom: 20}} 
+                    height={100}
                 >
                     <XAxis dataKey="value" allowDataOverflow 
                         tick={feature === "tempo" || feature === "loudness"}
