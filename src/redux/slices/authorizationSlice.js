@@ -17,7 +17,7 @@ export const requestAccessToken = createAsyncThunk("callback",
             let params = {
                 grant_type: "authorization_code",
                 code: code,
-                redirect_uri: process.env.REACT_APP_REDIRECT_URI + "login"
+                redirect_uri: process.env.REACT_APP_REDIRECT_URI + "/login"
             };
 
             return await axios

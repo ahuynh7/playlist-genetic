@@ -14,14 +14,15 @@ const featureDescription = {
     loudness: "The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db.",
     popularity: "The popularity of a track is a value between 0 and 100, with 100 being the most popular.  Generally speaking, songs that are being played a lot now will have a higher popularity than songs that were played a lot in the past.",
     speechiness: "Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.",
-    tempo: "The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration."
+    tempo: "The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.",
+    valence: "A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)."
 };
 
 const GraphInsights = () => {
     const {dataMapper, feature, setSliderValue, sliderValue} = useContext(MainContext);
     const [selected, setSelected] = useState({});
     const [bufferValue, setBufferValue] = useState(sliderValue);
-    
+
     const getInsight = () => {
         switch (feature) {
             case "loudness":
@@ -59,7 +60,9 @@ const GraphInsights = () => {
     return (Object.keys(dataMapper).length !== 0 && 
         <InsightsWrapper>
             {/* add units if feature is tempo or loudness */}
-            <InsightsLabel>{`${getInsight()}`}</InsightsLabel>
+            <InsightsLabel>
+                {`${getInsight()} (${selected?.freq} ${selected?.freq > 1 ? "tracks" : "track"})`}
+            </InsightsLabel>
             <InsightsDescription>{featureDescription[feature]}</InsightsDescription>
             <Range
                 min={0}

@@ -70,7 +70,7 @@ export const useRequestAuthorization = () => {
         let query = stringify({
             response_type: "code",
             client_id: process.env.REACT_APP_CLIENT_ID,
-            redirect_uri: process.env.REACT_APP_REDIRECT_URI + "login",
+            redirect_uri: process.env.REACT_APP_REDIRECT_URI + "/login",
             scope: scope.join(" "),
             state: generateRandomString(16),
             show_dialogue: true     //true: manual accept; for testing, false: automatic
