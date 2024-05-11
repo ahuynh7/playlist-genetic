@@ -33,6 +33,10 @@ export const userSlice = createSlice({
     //data stored in states as dictionaries to be easily accessed
     initialState: {},
 
+    reducers: {
+        userLoaded: () => {}
+    },
+
     extraReducers: builder => {
         builder.addCase(getUser.fulfilled,
             (state, {payload}) => {
@@ -42,4 +46,5 @@ export const userSlice = createSlice({
     }
 });
 
+export const { userLoaded } = userSlice.actions;
 export default userSlice.reducer;

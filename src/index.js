@@ -6,17 +6,20 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import App from "./App";
-import store from "./redux/store";
+import store, { persistor } from "./redux/store";
 import { GlobalStyle } from "./GlobalStyle";
+import { PersistGate } from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
 	<Provider store={store}>
-		<React.StrictMode>
-			<App />
-			<GlobalStyle />
-		</React.StrictMode>
+		<PersistGate loading={null} persistor={persistor}>
+			<React.StrictMode>
+				<App />
+				<GlobalStyle />
+			</React.StrictMode>
+		</PersistGate>
 	</Provider>
 );
 

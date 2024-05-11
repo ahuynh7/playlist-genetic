@@ -1,5 +1,5 @@
 import { actionChannel, all, delay, fork, put, select, take, takeEvery } from "redux-saga/effects";
-import { selectPlaylist } from "../store";
+import { selectPlaylist, selectUser } from "../store";
 
 import { analyzePlaylist, completePlaylist, getPlaylistTracks, getTrackFeatures, getUserPlaylists } from "../slices/playlistSlice";
 import { getUser } from "../slices/userSlice";
@@ -67,7 +67,7 @@ function* playlistSaga() {
         fork(throttle, getUserPlaylists.fulfilled, getUserPlaylists),
         fork(throttle, getPlaylistTracks.fulfilled, getPlaylistTracks),
     ]);
-
+    
     //initial fetch of playlists
     yield take(getUser.fulfilled);      //ensures user data is fetched first
     yield put(getUserPlaylists());
