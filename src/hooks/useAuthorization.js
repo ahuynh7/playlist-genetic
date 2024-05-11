@@ -4,10 +4,12 @@ import { stringify } from "query-string";
 
 import { selectAuthorization } from "../redux/store";
 import { refreshAccessToken, requestAccessToken } from "../redux/slices/authorizationSlice";
+import { userLoaded } from "../redux/slices/userSlice";
 
 export const useAuthorization = () => {
     const {refreshAccessTokenFetch} = useAccessTokenFetch();
     const state = useSelector(selectAuthorization);
+    const dispatch = useDispatch();
     const [accessToken, setAccessToken] = useState(state.accessToken);
     const refreshToken = state.refreshToken;
 
@@ -29,6 +31,11 @@ export const useAuthorization = () => {
 
     }, [accessToken, refreshAccessTokenFetch, refreshToken]);
 
+    useEffect(() => {
+        if (state?.isAuthorized === true) {
+            dispatch(userLoaded());
+        }
+    }, [dispatch, state]);
     return accessToken;
 };
 

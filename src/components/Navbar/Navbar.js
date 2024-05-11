@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthorizationContext } from "../../App";
 import { UserContext } from "../Home/Home";
 import { NavbarBrand, NavbarLinks, NavbarWrapper, ProfilePicture } from "./Navbar.styles";
+import { persistor } from "../../redux/store";
 
 const Navbar = () => {
     const {requestAuthorization} = useContext(AuthorizationContext);
@@ -12,6 +13,11 @@ const Navbar = () => {
     
     const hasUserLoaded = () => {
         return Object.keys(user).length !== 0;
+    };
+    
+    const handleLogout = () => {
+        persistor.purge();
+        window.location.reload();
     };
 
     return (
@@ -24,7 +30,7 @@ const Navbar = () => {
                     />
                     <NavbarWrapper.Text>
                         {/* handle logout */}
-                        <Link to="" onClick={() => window.location.reload()}>Logout</Link>
+                        <Link to="" onClick={handleLogout}>Logout</Link>
                     </NavbarWrapper.Text>
                 </NavbarLinks>
                 :

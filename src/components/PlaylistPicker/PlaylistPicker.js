@@ -15,7 +15,7 @@ const PlaylistPicker = () => {
     const playlistTrackFetch = usePlaylistTracksFetch();
     const playlists = useUserPlaylistFetch();
     const [selected, setSelected] = useState("");
-    
+
     const handleCardClick = playlistId => () => {
         graphType.current = graphTypeEnum.playlists;
 
@@ -23,7 +23,7 @@ const PlaylistPicker = () => {
         setSelected(playlistId);
     };
 
-    //useEffect here handles playlist changes
+    //handles playlist changes
     useEffect(() => {
         if (playlists[selected]?.analysis && (graphType.current === graphTypeEnum.playlists))
             mapTrackList(playlists[selected].tracks.items);

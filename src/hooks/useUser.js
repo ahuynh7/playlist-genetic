@@ -9,7 +9,8 @@ export const useUserFetch = () => {
     const state = useSelector(selectUser);
     const [user, setUser] = useState(state);
 
-    useEffect(() => setUser(state), [state]);
-
+    useEffect(() => {
+        setUser(state);
+    }, [state]);
     return user;
 };

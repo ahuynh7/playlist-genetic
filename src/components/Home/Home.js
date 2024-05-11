@@ -27,6 +27,12 @@ const Home = () => {
         
     }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
 
+    //navigates to /main if already authorized
+    useEffect(() => {
+        if (pathname === "/" && !isPendingAuthorization && isAuthorized) {
+            navigate("/main");
+        }
+    }, [isAuthorized, isPendingAuthorization, navigate, pathname]);
     return (
         <UserContext.Provider value={user}>
             <Navbar />
